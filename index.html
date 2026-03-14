@@ -82,7 +82,7 @@ transition:background .15s,transform .12s;
 .cards{display:flex;flex-direction:column;gap:12px;}
 
 /* today card */
-.today-card{background:var(–s1);border-radius:var(–r);border:1px solid var(–border);overflow:hidden;}
+.today-card{background:var(–s1);border-radius:var(–r);border:1px solid var(–border);overflow:hidden;word-break:break-word;}
 .today-top{padding:18px 18px 14px;}
 .today-stem{font-size:17px;font-weight:400;line-height:1.5;color:var(–t1);margin-top:6px;}
 .today-btn{
@@ -237,7 +237,7 @@ justify-content:center;flex-shrink:0;transition:background .15s,transform .1s;
       <div class="app-sub">31-Wochen-Programm</div>
     </div>
     <div style="display:flex;gap:8px;">
-      <button class="icon-btn" onclick="toggleTheme()" id="themeBtn">☀</button>
+      <button class="icon-btn" onclick="toggleTheme()" id="themeBtn" style="font-size:12px;font-weight:700;">D</button>
       <button class="icon-btn" onclick="show('guide')" title="Anleitung" style="font-size:14px;font-weight:700;">?</button>
       <button class="icon-btn" onclick="show('weeklist')">☰</button>
     </div>
@@ -557,7 +557,7 @@ function show(id){
 function toggleTheme(){
   document.body.classList.toggle('light');
   const light=document.body.classList.contains('light');
-  document.getElementById('themeBtn').textContent=light?'◐':'☀';
+  document.getElementById('themeBtn').textContent=light?'L':'D';
   try{ localStorage.setItem('sw_theme',light?'light':'dark'); }catch(e){}
 }
 
@@ -849,21 +849,16 @@ load();
 try{
   if(localStorage.getItem('sw_theme')==='light'){
     document.body.classList.add('light');
-    document.getElementById('themeBtn').textContent='◐';
+    document.getElementById('themeBtn').textContent='L';
   }
 }catch(e){}
 renderHome();
 
-// service worker
+// Kill any old service workers
 if('serviceWorker' in navigator){
-  const sw=`
-const C='sw3';
-self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.add('/')));self.skipWaiting();});
-self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});
-self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));});
-  `;
-  const blob=new Blob([sw],{type:'application/javascript'});
-  navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
+  navigator.serviceWorker.getRegistrations().then(regs=>{
+    regs.forEach(r=>r.unregister());
+  });
 }
 </script>
 
