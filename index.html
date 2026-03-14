@@ -134,16 +134,19 @@ html, body {
 }
 .icon-btn:hover { background: var(--s3); }
 
-.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
+.grid .card { min-width: 0; }
 
 .card {
   background: var(--s1);
   border-radius: var(--r);
-  padding: 18px;
+  padding: 16px;
   border: 1px solid var(--border);
   cursor: pointer;
   transition: transform .12s, background .15s;
-  position: relative; overflow: hidden;
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
 }
 .card:hover { background: var(--s2); }
 .card:active { transform: scale(.97); }
@@ -156,8 +159,9 @@ html, body {
 }
 
 .c-big {
-  font-size: 46px; font-weight: 700;
+  font-size: 42px; font-weight: 700;
   letter-spacing: -2px; line-height: 1;
+  word-break: break-all;
 }
 .c-big sub { font-size: 17px; font-weight: 400; color: var(--t2); letter-spacing: 0; vertical-align: baseline; }
 
