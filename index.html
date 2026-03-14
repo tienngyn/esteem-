@@ -5,373 +5,223 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Selbstwert</title>
-
-<!-- PWA -->
-
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Selbstwert">
 <meta name="theme-color" content="#000000">
 <meta name="mobile-web-app-capable" content="yes">
-
-<!-- App Icon (generiert als inline SVG → PNG via canvas) -->
-
 <link rel="apple-touch-icon" id="appIcon">
 <link rel="icon" id="favicon">
-
 <script>
-// Generate app icon as canvas and set as link
 (function(){
-  const c = document.createElement('canvas');
-  c.width = 512; c.height = 512;
-  const ctx = c.getContext('2d');
-  // background
-  const r = 110;
-  ctx.beginPath();
-  ctx.moveTo(r,0); ctx.lineTo(512-r,0);
-  ctx.quadraticCurveTo(512,0,512,r);
-  ctx.lineTo(512,512-r);
-  ctx.quadraticCurveTo(512,512,512-r,512);
-  ctx.lineTo(r,512);
-  ctx.quadraticCurveTo(0,512,0,512-r);
-  ctx.lineTo(0,r);
-  ctx.quadraticCurveTo(0,0,r,0);
-  ctx.closePath();
-  ctx.fillStyle = '#1C1C1E';
-  ctx.fill();
-  // S letter
-  ctx.font = 'bold 300px -apple-system, Helvetica';
-  ctx.fillStyle = '#ffffff';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('S', 256, 270);
-  const url = c.toDataURL('image/png');
-  document.getElementById('appIcon').href = url;
-  document.getElementById('favicon').href = url;
+  const c=document.createElement('canvas');c.width=512;c.height=512;
+  const ctx=c.getContext('2d'),r=110;
+  ctx.beginPath();ctx.moveTo(r,0);ctx.lineTo(512-r,0);ctx.quadraticCurveTo(512,0,512,r);
+  ctx.lineTo(512,512-r);ctx.quadraticCurveTo(512,512,512-r,512);ctx.lineTo(r,512);
+  ctx.quadraticCurveTo(0,512,0,512-r);ctx.lineTo(0,r);ctx.quadraticCurveTo(0,0,r,0);
+  ctx.closePath();ctx.fillStyle='#1C1C1E';ctx.fill();
+  ctx.font='bold 300px -apple-system,Helvetica';ctx.fillStyle='#fff';
+  ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('S',256,270);
+  const u=c.toDataURL('image/png');
+  document.getElementById('appIcon').href=u;document.getElementById('favicon').href=u;
 })();
 </script>
-
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 
-:root {
-  --bg: #000;
-  --s1: #1C1C1E;
-  --s2: #2C2C2E;
-  --s3: #3A3A3C;
-  --t1: #fff;
-  --t2: rgba(255,255,255,0.55);
-  --t3: rgba(255,255,255,0.28);
-  --border: rgba(255,255,255,0.07);
-  --r: 18px;
-  --font: -apple-system, 'Helvetica Neue', sans-serif;
+:root{
+–bg:#000;–s1:#1C1C1E;–s2:#2C2C2E;–s3:#3A3A3C;
+–t1:#fff;–t2:rgba(255,255,255,.55);–t3:rgba(255,255,255,.28);
+–border:rgba(255,255,255,.07);–green:#30D158;–r:18px;
+–font:-apple-system,‘Helvetica Neue’,sans-serif;
 }
-
-body.light {
-  --bg: #F2F2F7;
-  --s1: #fff;
-  --s2: #E5E5EA;
-  --s3: #D1D1D6;
-  --t1: #000;
-  --t2: rgba(0,0,0,0.5);
-  --t3: rgba(0,0,0,0.25);
-  --border: rgba(0,0,0,0.06);
+body.light{
+–bg:#F2F2F7;–s1:#fff;–s2:#E5E5EA;–s3:#D1D1D6;
+–t1:#000;–t2:rgba(0,0,0,.5);–t3:rgba(0,0,0,.25);–border:rgba(0,0,0,.06);
 }
-
-html, body {
-  background: var(--bg);
-  color: var(--t1);
-  font-family: var(--font);
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
-  transition: background 0.3s, color 0.3s;
+html,body{
+background:var(–bg);color:var(–t1);font-family:var(–font);
+min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+transition:background .3s,color .3s;
 }
-
-.screen { display: none; min-height: 100vh; flex-direction: column; background: var(--bg); transition: background 0.3s; }
-.screen.active { display: flex; }
-
-/* ── shared layout ── */
-.page {
-  padding: max(56px, calc(44px + env(safe-area-inset-top))) 20px max(40px, calc(20px + env(safe-area-inset-bottom)));
-  max-width: 430px;
-  margin: 0 auto;
-  width: 100%;
-  flex: 1;
+.screen{display:none;min-height:100vh;flex-direction:column;background:var(–bg);transition:background .3s;}
+.screen.active{display:flex;}
+.page{
+padding:max(56px,calc(44px + env(safe-area-inset-top))) 20px max(40px,calc(20px + env(safe-area-inset-bottom)));
+max-width:430px;margin:0 auto;width:100%;flex:1;
 }
-
-/* ── nav header ── */
-.nav-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 24px;
+.nav-bar{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
+.back-btn{
+width:32px;height:32px;background:var(–s2);border:none;border-radius:50%;
+cursor:pointer;color:var(–t1);font-size:15px;display:flex;align-items:center;
+justify-content:center;flex-shrink:0;transition:background .15s;
 }
-
-.back-btn {
-  width: 32px; height: 32px;
-  background: var(--s2);
-  border: none; border-radius: 50%;
-  cursor: pointer; color: var(--t1);
-  font-size: 15px; display: flex;
-  align-items: center; justify-content: center;
-  flex-shrink: 0; transition: background .15s;
+.back-btn:hover{background:var(–s3);}
+.page-title{font-size:22px;font-weight:700;letter-spacing:-.4px;flex:1;}
+.icon-btn{
+width:36px;height:36px;background:var(–s2);border:none;border-radius:50%;
+cursor:pointer;color:var(–t1);font-size:16px;display:flex;align-items:center;
+justify-content:center;transition:background .15s;flex-shrink:0;
 }
-.back-btn:hover { background: var(--s3); }
-
-.page-title {
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: -.4px;
+.icon-btn:hover{background:var(–s3);}
+.card{
+background:var(–s1);border-radius:var(–r);padding:18px;
+border:1px solid var(–border);position:relative;overflow:hidden;
+transition:background .15s,transform .12s;
 }
+.card.tap{cursor:pointer;}
+.card.tap:active{transform:scale(.98);}
+.c-label{font-size:11px;font-weight:500;color:var(–t2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;}
+.c-sub{font-size:13px;color:var(–t3);}
+::-webkit-scrollbar{width:0;}
 
 /* ── HOME ── */
-.home-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 28px;
+.home-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;}
+.app-title{font-size:34px;font-weight:700;letter-spacing:-.6px;}
+.app-sub{font-size:13px;color:var(–t2);margin-top:3px;}
+.cards{display:flex;flex-direction:column;gap:12px;}
+
+/* today card */
+.today-card{background:var(–s1);border-radius:var(–r);border:1px solid var(–border);overflow:hidden;}
+.today-top{padding:18px 18px 14px;}
+.today-stem{font-size:17px;font-weight:400;line-height:1.5;color:var(–t1);margin-top:6px;}
+.today-btn{
+display:block;width:100%;padding:16px 18px;
+background:var(–t1);color:var(–bg);
+border:none;font-family:var(–font);font-size:15px;font-weight:600;
+cursor:pointer;text-align:center;transition:opacity .15s;
+letter-spacing:-.1px;
 }
-
-.app-title { font-size: 34px; font-weight: 700; letter-spacing: -.6px; }
-.app-sub { font-size: 13px; color: var(--t2); margin-top: 3px; }
-
-.icon-btn {
-  width: 36px; height: 36px;
-  background: var(--s2); border: none; border-radius: 50%;
-  cursor: pointer; color: var(--t1);
-  font-size: 16px; display: flex;
-  align-items: center; justify-content: center;
-  transition: background .15s; flex-shrink: 0;
-}
-.icon-btn:hover { background: var(--s3); }
-
-.grid { display: flex; flex-direction: column; gap: 12px; width: 100%; }
-.grid .card { min-width: 0; width: 100%; }
-.card-row { display: flex; gap: 12px; }
-.card-row .card { flex: 1; min-width: 0; }
-
-.card {
-  background: var(--s1);
-  border-radius: var(--r);
-  padding: 16px;
-  border: 1px solid var(--border);
-  cursor: pointer;
-  transition: transform .12s, background .15s;
-  position: relative;
-  overflow: hidden;
-  min-width: 0;
-}
-.card:hover { background: var(--s2); }
-.card:active { transform: scale(.97); }
-.card-full { width: 100%; }
-
-.c-label {
-  font-size: 11px; font-weight: 500;
-  color: var(--t2); letter-spacing: .08em;
-  text-transform: uppercase; margin-bottom: 10px;
-}
-
-.c-big {
-  font-size: 42px; font-weight: 700;
-  letter-spacing: -2px; line-height: 1;
-  word-break: break-all;
-}
-.c-big sub { font-size: 17px; font-weight: 400; color: var(--t2); letter-spacing: 0; vertical-align: baseline; }
-
-.c-title { font-size: 16px; font-weight: 600; letter-spacing: -.2px; }
-.c-sub { font-size: 13px; color: var(--t2); margin-top: 2px; }
-.c-arr { position: absolute; top: 16px; right: 16px; color: var(--t3); font-size: 14px; }
+.today-btn:active{opacity:.7;}
+.today-done-row{padding:14px 18px;display:flex;align-items:center;gap:8px;}
+.today-done-icon{font-size:18px;color:var(–green);}
+.today-done-text{font-size:14px;color:var(–t2);}
 
 /* ring */
-.ring-row { display: flex; align-items: center; gap: 12px; }
-.ring { position: relative; width: 38px; height: 38px; flex-shrink: 0; }
-.ring svg { transform: rotate(-90deg); }
-.ring-n {
-  position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 600;
-}
+.ring{position:relative;width:44px;height:44px;flex-shrink:0;}
+.ring svg{transform:rotate(-90deg);}
+.ring-n{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;}
 
-
-
-/* stat row */
-.stat-row { display: flex; align-items: center; justify-content: space-between; }
-.stat-l { }
-.stat-name { font-size: 14px; color: var(--t2); }
-.stat-hint { font-size: 11px; color: var(--t3); margin-top: 1px; }
-.stat-val { font-size: 30px; font-weight: 700; letter-spacing: -1px; }
-.stat-val sub { font-size: 13px; font-weight: 400; color: var(--t2); letter-spacing: 0; vertical-align: baseline; }
+/* stat cards */
+.stat-row-cards{display:flex;gap:12px;}
+.stat-card{flex:1;background:var(–s1);border-radius:var(–r);padding:16px;border:1px solid var(–border);}
+.stat-num{font-size:36px;font-weight:700;letter-spacing:-1.5px;line-height:1;margin-top:4px;}
 
 /* ── WEEK LIST ── */
-.wlist { display: flex; flex-direction: column; gap: 8px; }
-
-.wrow {
-  background: var(--s1);
-  border-radius: var(--r);
-  padding: 15px 18px;
-  display: flex; align-items: center; gap: 14px;
-  cursor: pointer; border: 1px solid var(--border);
-  transition: background .15s, transform .1s;
+.wlist{display:flex;flex-direction:column;gap:8px;}
+.wrow{
+background:var(–s1);border-radius:var(–r);padding:15px 18px;
+display:flex;align-items:center;gap:14px;cursor:pointer;
+border:1px solid var(–border);transition:background .15s,transform .1s;
 }
-.wrow:hover { background: var(--s2); }
-.wrow:active { transform: scale(.99); }
-.wrow.cw { border-color: rgba(255,255,255,.22); }
-
-.wr-n { font-size: 17px; font-weight: 700; color: var(--t2); min-width: 26px; }
-.wr-info { flex: 1; }
-.wr-theme { font-size: 15px; font-weight: 600; }
-.wr-sub { font-size: 12px; color: var(--t2); margin-top: 1px; }
-.wr-arr { color: var(--t3); font-size: 14px; }
+.wrow:active{transform:scale(.99);}
+.wrow.active-week{border-color:rgba(255,255,255,.25);}
+body.light .wrow.active-week{border-color:rgba(0,0,0,.25);}
+.wrow.done-week{border-color:var(–green);border-opacity:.4;}
+.wr-n{font-size:17px;font-weight:700;color:var(–t2);min-width:26px;}
+.wr-info{flex:1;}
+.wr-theme{font-size:15px;font-weight:600;}
+.wr-sub{font-size:12px;color:var(–t2);margin-top:1px;}
+.wr-right{display:flex;align-items:center;gap:6px;}
+.check{color:var(–green);font-size:18px;}
+.wr-arr{color:var(–t3);font-size:14px;}
 
 /* ── WEEK DETAIL ── */
-.week-hero {
-  background: var(--s1);
-  border-radius: var(--r);
-  border: 1px solid var(--border);
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
+.week-hero{
+background:var(–s1);border-radius:var(–r);border:1px solid var(–border);
+padding:20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;
 }
-.wh-n { font-size: 52px; font-weight: 700; letter-spacing: -2px; line-height: 1; }
-.wh-theme { font-size: 13px; color: var(--t2); margin-top: 3px; }
-.wh-stems { font-size: 12px; color: var(--t3); margin-top: 1px; }
-.wh-r { text-align: right; }
-.wh-cnt { font-size: 32px; font-weight: 700; letter-spacing: -1px; }
-.wh-clabel { font-size: 11px; color: var(--t3); }
+.wh-n{font-size:52px;font-weight:700;letter-spacing:-2px;line-height:1;}
+.wh-theme{font-size:13px;color:var(–t2);margin-top:3px;}
+.wh-stems{font-size:12px;color:var(–t3);margin-top:1px;}
+.wh-r{text-align:right;}
+.wh-cnt{font-size:32px;font-weight:700;letter-spacing:-1px;}
+.wh-clabel{font-size:11px;color:var(–t3);}
 
-.slist { display: flex; flex-direction: column; gap: 10px; }
-
-.srow {
-  background: var(--s1);
-  border-radius: var(--r);
-  padding: 18px;
-  cursor: pointer; border: 1px solid var(--border);
-  transition: background .15s, transform .1s;
+/* day tabs */
+.day-tabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;padding-bottom:2px;}
+.day-tab{
+background:var(–s2);border:none;border-radius:20px;
+padding:6px 14px;font-family:var(–font);font-size:13px;font-weight:500;
+color:var(–t2);cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0;
 }
-.srow:hover { background: var(--s2); }
-.srow:active { transform: scale(.99); }
+.day-tab.on{background:var(–t1);color:var(–bg);}
+.day-tab.has-entries{color:var(–t1);}
+.day-tab.done-day::after{content:’ ✓’;color:var(–green);font-size:11px;}
 
-.sr-lbl { font-size: 11px; color: var(--t3); text-transform: uppercase; letter-spacing: .1em; font-weight: 500; margin-bottom: 6px; }
-.sr-text { font-size: 16px; font-weight: 400; line-height: 1.5; }
-.sr-cnt { font-size: 12px; color: var(--t3); margin-top: 8px; }
-.sr-cnt.has { color: rgba(255,255,255,.45); }
-
-.wknd-box {
-  background: var(--s1);
-  border-radius: var(--r);
-  padding: 18px;
-  border: 1px dashed rgba(255,255,255,.13);
-  margin-top: 20px;
+/* stem list */
+.slist{display:flex;flex-direction:column;gap:10px;}
+.srow{
+background:var(–s1);border-radius:var(–r);padding:18px;
+cursor:pointer;border:1px solid var(–border);transition:background .15s,transform .1s;
 }
-.wknd-lbl { font-size: 11px; color: var(--t3); text-transform: uppercase; letter-spacing: .1em; font-weight: 500; margin-bottom: 8px; }
-.wknd-text { font-size: 14px; color: var(--t2); line-height: 1.6; font-style: italic; }
+.srow:active{transform:scale(.99);}
+.sr-lbl{font-size:11px;color:var(–t3);text-transform:uppercase;letter-spacing:.1em;font-weight:500;margin-bottom:6px;}
+.sr-text{font-size:16px;font-weight:400;line-height:1.5;}
+.sr-cnt{font-size:12px;color:var(–t3);margin-top:8px;}
+.sr-cnt.has{color:var(–green);}
 
-/* ── FOCUS MODE (same screen style) ── */
-#focus { overflow-y: auto; }
-#focus .page { padding-bottom: 60px; }
-
-.f-stem-card {
-  background: var(--s1);
-  border-radius: var(--r);
-  border: 1px solid var(--border);
-  padding: 20px;
-  margin-bottom: 12px;
+/* weekend box */
+.wknd-box{
+background:var(–s1);border-radius:var(–r);padding:18px;
+border:1px dashed rgba(255,255,255,.15);margin-top:16px;cursor:pointer;
+transition:background .15s;
 }
+body.light .wknd-box{border-color:rgba(0,0,0,.15);}
+.wknd-box:active{background:var(–s2);}
+.wknd-lbl{font-size:11px;color:var(–t3);text-transform:uppercase;letter-spacing:.1em;font-weight:500;margin-bottom:8px;}
+.wknd-text{font-size:14px;color:var(–t2);line-height:1.6;font-style:italic;}
+.wknd-cnt{font-size:12px;color:var(–green);margin-top:6px;}
 
-.f-stem-lbl {
-  font-size: 11px; font-weight: 500;
-  color: var(--t2); letter-spacing: .08em;
-  text-transform: uppercase; margin-bottom: 10px;
+/* ── FOCUS ── */
+#focus{overflow-y:auto;}
+#focus .page{padding-bottom:60px;}
+.f-stem-card{background:var(–s1);border-radius:var(–r);border:1px solid var(–border);padding:20px;margin-bottom:12px;}
+.f-stem-lbl{font-size:11px;font-weight:500;color:var(–t2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;}
+.f-stem-text{font-size:18px;font-weight:400;line-height:1.55;color:var(–t1);}
+.f-nav-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px;}
+.f-tab{
+background:var(–s2);border:none;border-radius:20px;padding:5px 13px;
+font-family:var(–font);font-size:12px;font-weight:500;color:var(–t2);cursor:pointer;transition:all .15s;
 }
+.f-tab.on{background:var(–t1);color:var(–bg);}
 
-.f-stem-text {
-  font-size: 18px; font-weight: 400;
-  line-height: 1.55; color: var(--t1);
+/* day nav in focus */
+.f-day-nav{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px;}
+.f-day-btn{
+background:var(–s2);border:none;border-radius:20px;padding:5px 12px;
+font-family:var(–font);font-size:12px;font-weight:500;color:var(–t2);cursor:pointer;
+white-space:nowrap;transition:all .15s;flex-shrink:0;
 }
+.f-day-btn.on{background:var(–t1);color:var(–bg);}
+.f-day-btn.has::after{content:’ ✓’;color:var(–green);font-size:10px;}
 
-.f-nav-tabs {
-  display: flex; gap: 6px; flex-wrap: wrap; margin-top: 14px;
+.f-entries-card{background:var(–s1);border-radius:var(–r);border:1px solid var(–border);padding:18px;margin-bottom:12px;}
+.f-entries-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.f-entries-lbl{font-size:11px;font-weight:500;color:var(–t2);letter-spacing:.08em;text-transform:uppercase;}
+.f-counter{font-size:12px;color:var(–t3);transition:color .3s;}
+.f-counter.ok{color:var(–green);}
+.fentry{display:flex;align-items:baseline;gap:10px;padding:9px 0;border-bottom:1px solid var(–border);animation:eIn .2s ease;}
+@keyframes eIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+.fentry:last-child{border-bottom:none;}
+.fe-n{font-size:12px;color:var(–t3);min-width:18px;}
+.fe-t{font-size:15px;font-weight:300;color:var(–t1);flex:1;line-height:1.5;word-break:break-word;}
+.fe-del{background:none;border:none;color:var(–t3);font-size:18px;cursor:pointer;padding:4px 6px;line-height:1;flex-shrink:0;}
+.f-input-card{background:var(–s1);border-radius:var(–r);border:1px solid var(–border);padding:16px 18px;display:flex;align-items:center;gap:12px;}
+.f-input{flex:1;background:none;border:none;outline:none;font-family:var(–font);font-size:16px;font-weight:300;color:var(–t1);caret-color:var(–t1);}
+.f-input::placeholder{color:var(–t3);}
+.f-add{
+width:32px;height:32px;background:var(–s2);border:none;border-radius:50%;
+cursor:pointer;color:var(–t1);font-size:20px;display:flex;align-items:center;
+justify-content:center;flex-shrink:0;transition:background .15s,transform .1s;
 }
+.f-add:active{transform:scale(1.1);}
 
-.f-tab {
-  background: var(--s2); border: none; border-radius: 20px;
-  padding: 5px 13px;
-  font-family: var(--font); font-size: 12px; font-weight: 500;
-  color: var(--t2); cursor: pointer;
-  transition: background .15s, color .15s;
-}
-.f-tab.on { background: var(--t1); color: #000; }
-.f-tab:hover:not(.on) { background: var(--s3); color: var(--t1); }
-
-/* entries card */
-.f-entries-card {
-  background: var(--s1);
-  border-radius: var(--r);
-  border: 1px solid var(--border);
-  padding: 18px;
-  margin-bottom: 12px;
-}
-
-.f-entries-header {
-  display: flex; align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-.f-entries-lbl {
-  font-size: 11px; font-weight: 500;
-  color: var(--t2); letter-spacing: .08em;
-  text-transform: uppercase;
-}
-
-.f-counter {
-  font-size: 12px; color: var(--t3);
-  transition: color .3s;
-}
-.f-counter.ok { color: rgba(255,255,255,.5); }
-
-.fentry {
-  display: flex; align-items: baseline; gap: 10px;
-  padding: 9px 0;
-  border-bottom: 1px solid rgba(255,255,255,.06);
-  animation: eIn .2s ease;
-}
-@keyframes eIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }
-.fentry:last-child { border-bottom: none; }
-
-.fe-n { font-size: 12px; color: var(--t3); min-width: 18px; }
-.fe-t { font-size: 15px; font-weight: 300; color: var(--t1); flex: 1; line-height: 1.5; word-break: break-word; }
-.fe-del { background: none; border: none; color: var(--t3); font-size: 18px; cursor: pointer; padding: 4px 6px; line-height: 1; flex-shrink: 0; }
-
-/* input card */
-.f-input-card {
-  background: var(--s1);
-  border-radius: var(--r);
-  border: 1px solid var(--border);
-  padding: 16px 18px;
-  display: flex; align-items: center; gap: 12px;
-}
-
-.f-input {
-  flex: 1; background: none; border: none; outline: none;
-  font-family: var(--font); font-size: 16px; font-weight: 300;
-  color: var(--t1); caret-color: white;
-}
-.f-input::placeholder { color: var(--t3); }
-
-.f-add {
-  width: 32px; height: 32px;
-  background: var(--s2); border: none; border-radius: 50%;
-  cursor: pointer; color: var(--t1); font-size: 20px;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; transition: background .15s, transform .1s;
-}
-.f-add:hover { background: var(--s3); transform: scale(1.1); }
-
-::-webkit-scrollbar { width: 0; }
+/* ── GUIDE ── */
+.guide-card{background:var(–s1);border-radius:var(–r);border:1px solid var(–border);padding:20px;margin-bottom:12px;}
+.guide-card h3{font-size:13px;font-weight:600;color:var(–t2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;}
+.guide-card p{font-size:15px;line-height:1.7;color:var(–t1);}
+.guide-card .quote{font-style:italic;color:var(–t2);border-left:2px solid var(–t3);padding-left:14px;margin-top:10px;}
 </style>
 
 </head>
@@ -388,56 +238,58 @@ html, body {
     </div>
     <div style="display:flex;gap:8px;">
       <button class="icon-btn" onclick="toggleTheme()" id="themeBtn">☀</button>
-      <button class="icon-btn" onclick="show('guide')" title="Anleitung">?</button>
+      <button class="icon-btn" onclick="show('guide')" title="Anleitung" style="font-size:14px;font-weight:700;">?</button>
       <button class="icon-btn" onclick="show('weeklist')">☰</button>
     </div>
   </div>
 
-  <div class="grid" style="margin-bottom:12px;">
+  <div class="cards">
 
 ```
-<!-- current week -->
-<div class="card" onclick="goCurrentWeek()">
-  <div class="c-label">Aktuelle Woche</div>
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;">
-    <div>
-      <div style="font-size:32px;font-weight:700;letter-spacing:-1px;line-height:1.1;" id="hWeek">Woche 1</div>
-      <div class="c-sub" style="margin-top:4px;" id="hTheme">–</div>
-    </div>
-    <div class="ring">
-      <svg width="44" height="44" viewBox="0 0 44 44">
-        <circle cx="22" cy="22" r="17" fill="none" stroke="rgba(128,128,128,.25)" stroke-width="2.5"/>
-        <circle id="ringArc" cx="22" cy="22" r="17" fill="none" stroke="var(--t1)" stroke-width="2.5"
-          stroke-dasharray="107" stroke-dashoffset="104" stroke-linecap="round" style="transform:rotate(-90deg);transform-origin:22px 22px;"/>
-      </svg>
-      <div class="ring-n" id="rn" style="font-size:13px;font-weight:700;">1</div>
-    </div>
+<!-- today card -->
+<div class="today-card">
+  <div class="today-top">
+    <div class="c-label" id="todayLabel">Heute · Tag 1</div>
+    <div class="today-stem" id="todayStem">–</div>
   </div>
-  <div style="font-size:12px;color:var(--t3);margin-top:10px;">von 31 Wochen</div>
+  <div id="todayDoneRow" style="display:none;" class="today-done-row">
+    <span class="today-done-icon">✓</span>
+    <span class="today-done-text" id="todayDoneText">Heute erledigt</span>
+  </div>
+  <button class="today-btn" id="todayBtn" onclick="startToday()">Jetzt starten →</button>
 </div>
 
-<!-- next stem -->
-<div class="card" onclick="goCurrentWeek()">
-  <div class="c-label">Nächster Satz</div>
-  <div style="margin-top:4px;">
-    <div style="font-size:15px;font-weight:600;line-height:1.4;" id="hNextStem">Satz 1 beginnen</div>
-    <div style="font-size:12px;color:var(--t3);margin-top:6px;" id="hNextHint">Woche 1</div>
+<!-- stat cards -->
+<div class="stat-row-cards">
+  <div class="stat-card">
+    <div class="c-label">Aktuelle Woche</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;">
+      <div>
+        <div style="font-size:26px;font-weight:700;letter-spacing:-1px;" id="hWeek">Woche 1</div>
+        <div class="c-sub" id="hTheme">–</div>
+      </div>
+      <div class="ring" style="width:40px;height:40px;">
+        <svg width="40" height="40" viewBox="0 0 40 40">
+          <circle cx="20" cy="20" r="15" fill="none" stroke="rgba(128,128,128,.2)" stroke-width="2.5"/>
+          <circle id="ringArc" cx="20" cy="20" r="15" fill="none" stroke="var(--t1)" stroke-width="2.5"
+            stroke-dasharray="94" stroke-dashoffset="91" stroke-linecap="round" style="transform:rotate(-90deg);transform-origin:20px 20px;"/>
+        </svg>
+        <div class="ring-n" id="rn" style="font-size:12px;">1</div>
+      </div>
+    </div>
   </div>
-  <div style="font-size:20px;color:var(--t3);margin-top:12px;">↗</div>
+  <div class="stat-card tap" onclick="show('weeklist')" style="cursor:pointer;">
+    <div class="c-label">Fortschritt</div>
+    <div class="stat-num" id="hWeeksDone">0</div>
+    <div class="c-sub" style="margin-top:4px;">Wochen abgeschl.</div>
+  </div>
 </div>
 
-<!-- stats -->
-<div class="card card-full">
-  <div style="display:flex;justify-content:space-between;align-items:center;">
-    <div>
-      <div class="c-label">Einträge gesamt</div>
-      <div style="font-size:38px;font-weight:700;letter-spacing:-1.5px;line-height:1;" id="hTotal">0</div>
-    </div>
-    <div style="text-align:right;">
-      <div class="c-label">Sätze bearbeitet</div>
-      <div style="font-size:38px;font-weight:700;letter-spacing:-1.5px;line-height:1;" id="hStemsDone2">0</div>
-    </div>
-  </div>
+<!-- week progress bar -->
+<div class="card">
+  <div class="c-label" id="hDayLabel">Tag 1 von 5</div>
+  <div style="display:flex;gap:6px;margin-top:8px;" id="dayDots"></div>
+  <div style="font-size:13px;color:var(--t2);margin-top:10px;" id="hTotalEntries">0 Einträge gesamt</div>
 </div>
 ```
 
@@ -464,13 +316,14 @@ html, body {
   <div class="nav-bar">
     <button class="back-btn" onclick="show('weeklist')">←</button>
     <div class="page-title" id="dtitle">Woche 1</div>
+    <div id="dCheckmark" style="display:none;color:var(--green);font-size:20px;">✓</div>
   </div>
 
   <div class="week-hero">
     <div>
       <div class="wh-n" id="dBig">1</div>
       <div class="wh-theme" id="dTheme">–</div>
-      <div class="wh-stems" id="dStems">4 Satzstämme</div>
+      <div class="wh-stems" id="dStems">4 Satzstämme · 5 Tage</div>
     </div>
     <div class="wh-r">
       <div class="wh-cnt" id="dCnt">0</div>
@@ -478,11 +331,82 @@ html, body {
     </div>
   </div>
 
+  <!-- day tabs -->
+
+  <div class="day-tabs" id="detailDayTabs"></div>
+
   <div class="slist" id="slistEl"></div>
 
-  <div class="wknd-box">
+  <div class="wknd-box" onclick="openWeekendReflection()">
     <div class="wknd-lbl">Wochenend-Reflexion</div>
     <div class="wknd-text">„Wenn irgendetwas von dem, was ich diese Woche geschrieben habe, wahr ist, wäre es hilfreich, wenn ich …"</div>
+    <div class="wknd-cnt" id="wkndCnt" style="display:none;"></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══ FOCUS ═══ -->
+
+<div id="focus" class="screen">
+<div class="page">
+  <div class="nav-bar">
+    <button class="back-btn" onclick="closeFocus()">←</button>
+    <div class="page-title" id="fTitle">Woche 1 · Tag 1</div>
+  </div>
+
+  <div class="f-stem-card">
+    <div class="f-stem-lbl">Satzstamm</div>
+    <div class="f-stem-text" id="fStem"></div>
+    <div class="f-nav-tabs" id="fStemTabs"></div>
+  </div>
+
+  <div style="margin-bottom:6px;">
+    <div class="c-label" style="margin-bottom:6px;">Tag</div>
+    <div class="f-day-nav" id="fDayNav"></div>
+  </div>
+
+  <div class="f-entries-card">
+    <div class="f-entries-header">
+      <div class="f-entries-lbl">Antworten</div>
+      <div class="f-counter" id="fCtr">0 / 6</div>
+    </div>
+    <div id="fEntries"></div>
+  </div>
+
+  <div class="f-input-card">
+    <input class="f-input" id="fInput" placeholder="… schreib einfach weiter"
+      onkeydown="fKey(event)" autocomplete="off"/>
+    <button class="f-add" onclick="fAdd()">+</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══ WEEKEND REFLECTION ═══ -->
+
+<div id="weekend" class="screen">
+<div class="page">
+  <div class="nav-bar">
+    <button class="back-btn" onclick="show('weekdetail')">←</button>
+    <div class="page-title">Wochenreflexion</div>
+  </div>
+
+  <div class="f-stem-card" style="margin-bottom:12px;">
+    <div class="f-stem-lbl">Satzstamm</div>
+    <div class="f-stem-text">Wenn irgendetwas von dem, was ich diese Woche geschrieben habe, wahr ist, wäre es hilfreich, wenn ich …</div>
+  </div>
+
+  <div class="f-entries-card">
+    <div class="f-entries-header">
+      <div class="f-entries-lbl">Antworten</div>
+      <div class="f-counter" id="wkndCtr">0 / 6</div>
+    </div>
+    <div id="wkndEntries"></div>
+  </div>
+
+  <div class="f-input-card">
+    <input class="f-input" id="wkndInput" placeholder="… schreib einfach weiter"
+      onkeydown="wkndKey(event)" autocomplete="off"/>
+    <button class="f-add" onclick="wkndAdd()">+</button>
   </div>
 </div>
 </div>
@@ -496,120 +420,60 @@ html, body {
     <div class="page-title">Anleitung</div>
   </div>
 
-  <div style="display:flex;flex-direction:column;gap:12px;">
-
-```
-<div class="card" style="cursor:default;">
-  <div class="c-label">Was ist das hier?</div>
-  <div style="font-size:15px;line-height:1.7;color:var(--t1);margin-top:6px;">
-    Dieses Programm basiert auf <em style="font-style:italic;">The Six Pillars of Self-Esteem</em> von Nathaniel Branden. Die Kernidee: Selbstwertgefühl kann nicht direkt aufgebaut werden – es entsteht als Ergebnis konkreter innerer Praktiken.
+  <div class="guide-card">
+    <h3>Was ist das hier?</h3>
+    <p>Dieses Programm basiert auf <em>The Six Pillars of Self-Esteem</em> von Nathaniel Branden. Die Kernidee: Selbstwertgefühl kann nicht direkt aufgebaut werden – es entsteht als Ergebnis konkreter innerer Praktiken.</p>
   </div>
-</div>
 
-<div class="card" style="cursor:default;">
-  <div class="c-label">Die Methode</div>
-  <div style="font-size:15px;line-height:1.7;color:var(--t1);margin-top:6px;">
-    Du vervollständigst unvollständige Sätze – so schnell wie möglich, ohne nachzudenken, ohne zu zensieren. Kein Richtig oder Falsch. Dein Ziel sind <strong>6–10 Antworten pro Satz</strong>. Der Prozess bringt unbewusstes Material an die Oberfläche.
+  <div class="guide-card">
+    <h3>Die Methode</h3>
+    <p>Du vervollständigst unvollständige Sätze – so schnell wie möglich, ohne nachzudenken, ohne zu zensieren. Kein Richtig oder Falsch. Dein Ziel sind <strong>6–10 Antworten pro Satz</strong>.</p>
   </div>
-</div>
 
-<div class="card" style="cursor:default;">
-  <div class="c-label">So gehst du vor</div>
-  <div style="font-size:15px;line-height:1.7;color:var(--t1);margin-top:6px;">
-    <strong>Morgens</strong> – öffne die aktuelle Woche und schreib 6–10 Antworten pro Satzstamm. Das dauert ca. 10 Minuten.<br><br>
-    <strong>Abends</strong> – optional: lies nochmal was du morgens geschrieben hast.<br><br>
-    <strong>Wochenende</strong> – lies alles der Woche durch und beantworte: <em style="font-style:italic;">„Wenn irgendetwas davon wahr ist, wäre es hilfreich, wenn ich …"</em>
+  <div class="guide-card">
+    <h3>Tagesablauf</h3>
+    <p><strong>Täglich (Tag 1–5 pro Woche)</strong> – mach dieselben Satzstämme jeden Tag. Dein Gehirn liefert jeden Tag neue, tiefere Antworten.<br><br>
+    <strong>Am Ende der Woche</strong> – lies alles der Woche und beantworte die Wochenreflexion.</p>
   </div>
-</div>
 
-<div class="card" style="cursor:default;">
-  <div class="c-label">Wichtige Regeln</div>
-  <div style="font-size:15px;line-height:1.7;color:var(--t1);margin-top:6px;">
-    · Schreib so schnell du kannst – kein Pausieren<br>
+  <div class="guide-card">
+    <h3>Wichtige Regeln</h3>
+    <p>· Schreib so schnell du kannst – kein Pausieren<br>
     · Nicht bewerten ob es „wahr" oder „tief" ist<br>
     · Wenn nichts kommt: einfach irgendetwas erfinden<br>
     · Nie weniger als 6 Antworten pro Satz<br>
-    · Lies nicht nach was du gestern geschrieben hast
-  </div>
-</div>
-
-<div class="card" style="cursor:default;">
-  <div class="c-label">Die 6 Säulen</div>
-  <div style="font-size:15px;line-height:1.7;color:var(--t1);margin-top:6px;">
-    <strong>1. Bewusst leben</strong> – den Verstand aktiv einsetzen, Fakten akzeptieren<br><br>
-    <strong>2. Selbstakzeptanz</strong> – sich nicht in einer feindseligen Beziehung zu sich selbst sein (Wochen 1–10)<br><br>
-    <strong>3. Selbstverantwortung</strong> – das eigene Leben als persönliche Aufgabe begreifen (Wochen 11–13)<br><br>
-    <strong>4. Selbstbehauptung</strong> – die eigene Identität und Werte im Alltag leben (Wochen 14–15)<br><br>
-    <strong>5. Zielgerichtet leben</strong> – konkrete Ziele und Handlungen (Wochen 16–17)<br><br>
-    <strong>6. Integrität</strong> – so leben wie man es von sich selbst fordert (Wochen 18–19)
-  </div>
-</div>
-
-<div class="card" style="cursor:default;">
-  <div class="c-label">Spiegelübung</div>
-  <div style="font-size:15px;line-height:1.7;color:var(--t1);margin-top:6px;">
-    Täglich 2 Minuten vor dem Ganzkörperspiegel stehen und laut sagen:<br><br>
-    <em style="font-style:italic;color:var(--t2);">„Was auch immer meine Schwächen oder Unzulänglichkeiten sind – ich akzeptiere mich vollständig und ohne Vorbehalt."</em><br><br>
-    Morgens und abends, 2 Wochen lang. Branden empfiehlt dies parallel zu den Satzergänzungen.
-  </div>
-</div>
-
-<div class="card" style="cursor:default;">
-  <div class="c-label">Bei Widerstand</div>
-  <div style="font-size:15px;line-height:1.7;color:var(--t1);margin-top:6px;">
-    Wenn ein unangenehmes Gefühl auftaucht – nicht wegdrücken. Lokalisiere es im Körper, atme tief und bleib dabei. Sag dir: <em style="font-style:italic;">„Ich erlebe gerade [Gefühl], und ich akzeptiere, dass das da ist."</em><br><br>
-    Wenn Selbstakzeptanz sich unmöglich anfühlt: akzeptiere den Widerstand selbst. Kämpf nicht gegen den Block – das verstärkt ihn nur.
-  </div>
-</div>
-
-<div class="card" style="cursor:default;margin-bottom:8px;">
-  <div class="c-label">Der wichtigste Satz</div>
-  <div style="font-size:17px;line-height:1.7;color:var(--t1);margin-top:6px;font-style:italic;">
-    „Selbstakzeptanz ist die Voraussetzung für Veränderung und Wachstum. Ich kann von einem Fehler nicht lernen, den ich nicht akzeptieren kann, gemacht zu haben."
-  </div>
-  <div style="font-size:12px;color:var(--t3);margin-top:8px;">— Nathaniel Branden</div>
-</div>
-```
-
-  </div>
-</div>
-</div>
-<div id="focus" class="screen">
-<div class="page">
-  <div class="nav-bar">
-    <button class="back-btn" onclick="closeFocus()">←</button>
-    <div class="page-title" id="fTitle">Woche 1 · Satz 1</div>
+    · Lies nicht nach was du gestern geschrieben hast</p>
   </div>
 
-  <!-- stem card with tab switcher -->
-
-  <div class="f-stem-card">
-    <div class="f-stem-lbl">Satzstamm</div>
-    <div class="f-stem-text" id="fStem"></div>
-    <div class="f-nav-tabs" id="fNav"></div>
+  <div class="guide-card">
+    <h3>Die 6 Säulen</h3>
+    <p><strong>1. Bewusst leben</strong> – Verstand aktiv einsetzen (Wo. 1–3)<br><br>
+    <strong>2. Selbstakzeptanz</strong> – nicht in feindseliger Beziehung zu sich selbst sein (Wo. 4–10)<br><br>
+    <strong>3. Selbstverantwortung</strong> – das eigene Leben als persönliche Aufgabe (Wo. 11–13)<br><br>
+    <strong>4. Selbstbehauptung</strong> – eigene Werte im Alltag leben (Wo. 14–15)<br><br>
+    <strong>5. Zielgerichtet leben</strong> – konkrete Ziele und Handlungen (Wo. 16–17)<br><br>
+    <strong>6. Integrität</strong> – so leben wie man es von sich fordert (Wo. 18–19)</p>
   </div>
 
-  <!-- entries card -->
-
-  <div class="f-entries-card" id="fEntriesCard">
-    <div class="f-entries-header">
-      <div class="f-entries-lbl">Deine Antworten</div>
-      <div class="f-counter" id="fCtr">0 / 6</div>
-    </div>
-    <div id="fEntries"></div>
+  <div class="guide-card">
+    <h3>Spiegelübung</h3>
+    <p>Täglich 2 Minuten vor dem Spiegel, laut sagen:</p>
+    <p class="quote">„Was auch immer meine Schwächen oder Unzulänglichkeiten sind – ich akzeptiere mich vollständig und ohne Vorbehalt."</p>
+    <p style="margin-top:10px;">Morgens und abends, 2 Wochen lang.</p>
   </div>
 
-  <!-- input card -->
-
-  <div class="f-input-card">
-    <input class="f-input" id="fInput" placeholder="… schreib einfach weiter"
-      onkeydown="fKey(event)" autocomplete="off"/>
-    <button class="f-add" onclick="fAdd()">+</button>
+  <div class="guide-card" style="margin-bottom:0;">
+    <h3>Der wichtigste Satz</h3>
+    <p class="quote">„Selbstakzeptanz ist die Voraussetzung für Veränderung. Ich kann von einem Fehler nicht lernen, den ich nicht akzeptieren kann, gemacht zu haben."<br><br>— Nathaniel Branden</p>
   </div>
+
 </div>
 </div>
 
 <script>
+/* ══════ DATA ══════ */
+const DAYS_PER_WEEK = 5;
+
 const W=[
   {t:"Grundlagen",s:["Wenn ich heute mehr Bewusstsein in mein Leben bringe …","Wenn ich heute mehr Verantwortung für meine Entscheidungen übernehme …","Wenn ich heute mehr darauf achte, wie ich mit Menschen umgehe …","Wenn ich mein Energielevel heute um 5% steigere …"]},
   {t:"Bewusstsein vertiefen",s:["Wenn ich 5% mehr Bewusstsein in meine wichtigen Beziehungen bringe …","Wenn ich 5% mehr Bewusstsein für meine Unsicherheiten bringe …","Wenn ich 5% mehr Bewusstsein für meine tiefsten Bedürfnisse bringe …","Wenn ich 5% mehr Bewusstsein für meine Emotionen bringe …"]},
@@ -644,19 +508,45 @@ const W=[
   {t:"Alle sechs Säulen",s:["Wenn ich 5% mehr Bewusstsein in mein Leben bringe …","Wenn ich 5% selbstakzeptierender bin …","Wenn ich 5% mehr Selbstverantwortung in mein Leben bringe …","Wenn ich 5% selbstbehauptender handle …","Wenn ich mein Leben 5% zielgerichteter lebe …","Wenn ich 5% mehr Integrität in mein Leben bringe …","Wenn ich tief einatme und zulasse, zu spüren, wie sich Selbstwertgefühl anfühlt …"]}
 ];
 
-let data={}, vw=0, fw=0, fs=0;
+/* ══════ STATE ══════
+  Storage structure:
+  entries: { "w{wi}_s{si}_d{day}": ["text",...] }  day = 1..5
+  weekend: { "w{wi}": ["text",...] }
+  currentWeek: number (0-indexed)
+  currentDay: number (1-5)
+*/
+let db = { entries:{}, weekend:{}, currentWeek:0, currentDay:1 };
+let vw=0, fw=0, fs=0, fd=1; // view week, focus week/stem/day
 
-const gk=(w,s)=>`w${w}_s${s}`;
-const ge=(w,s)=>data[gk(w,s)]||[];
-const se=(w,s,l)=>{ data[gk(w,s)]=l; try{localStorage.setItem('sw',JSON.stringify(data));}catch(e){} };
-const load=()=>{ try{const d=localStorage.getItem('sw');if(d)data=JSON.parse(d);}catch(e){} };
-const total=()=>Object.values(data).reduce((a,b)=>a+(b||[]).length,0);
-const wCnt=(w)=>W[w].s.reduce((a,_,s)=>a+ge(w,s).length,0);
-const wStemsDone=(w)=>W[w].s.filter((_,s)=>ge(w,s).length>0).length;
-const curWeek=()=>{ for(let w=W.length-1;w>=0;w--){ if(wCnt(w)>0)return w; } return 0; };
+function save(){ try{ localStorage.setItem('sw2', JSON.stringify(db)); }catch(e){} }
+function load(){
+  try{
+    const d=localStorage.getItem('sw2');
+    if(d) db=JSON.parse(d);
+  }catch(e){}
+}
+
+// entry key: week, stem, day
+const ek=(w,s,d)=>`w${w}_s${s}_d${d}`;
+const getE=(w,s,d)=>db.entries[ek(w,s,d)]||[];
+const setE=(w,s,d,l)=>{ db.entries[ek(w,s,d)]=l; save(); };
+
+const getWknd=(w)=>db.weekend[`w${w}`]||[];
+const setWknd=(w,l)=>{ db.weekend[`w${w}`]=l; save(); };
+
+// day done = at least one stem has 6+ entries that day
+const dayDone=(w,d)=>W[w].s.some((_,s)=>getE(w,s,d).length>=6);
+// week done = all 5 days done + weekend has entries
+const weekDone=(w)=>{
+  const allDays=[1,2,3,4,5].every(d=>dayDone(w,d));
+  return allDays && getWknd(w).length>0;
+};
+const totalEntries=()=>Object.values(db.entries).reduce((a,b)=>a+(b||[]).length,0);
+const weeksDone=()=>W.reduce((a,_,i)=>a+(weekDone(i)?1:0),0);
+
 const esc=(t)=>t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
-/* screens */
+/* ══════ SCREENS ══════ */
 function show(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -664,101 +554,190 @@ function show(id){
   if(id==='weeklist') renderWList();
 }
 
-function goCurrentWeek(){
-  vw=curWeek();
-  renderDetail(vw);
-  show('weekdetail');
-}
-
 function toggleTheme(){
   document.body.classList.toggle('light');
-  const isLight = document.body.classList.contains('light');
-  document.getElementById('themeBtn').textContent = isLight ? '◐' : '☀';
-  try { localStorage.setItem('sw_theme', isLight ? 'light' : 'dark'); } catch(e){}
+  const light=document.body.classList.contains('light');
+  document.getElementById('themeBtn').textContent=light?'◐':'☀';
+  try{ localStorage.setItem('sw_theme',light?'light':'dark'); }catch(e){}
 }
 
-/* home */
+/* ══════ HOME ══════ */
 function renderHome(){
-  const cw=curWeek(), wk=W[cw];
+  const cw=db.currentWeek, cd=db.currentDay, wk=W[cw];
+
   document.getElementById('hWeek').textContent=`Woche ${cw+1}`;
   document.getElementById('hTheme').textContent=wk.t;
-  if(document.getElementById('rn')) document.getElementById('rn').textContent=cw+1;
-  document.getElementById('hTotal').textContent=total();
-  if(document.getElementById('hStemsDone')) document.getElementById('hStemsDone').textContent=`${wStemsDone(cw)} Sätze bearbeitet`;
-  document.getElementById('hStemsDone2').textContent=wStemsDone(cw);
+  document.getElementById('rn').textContent=cw+1;
+  document.getElementById('hWeeksDone').textContent=weeksDone();
+  document.getElementById('hTotalEntries').textContent=`${totalEntries()} Einträge gesamt`;
+  document.getElementById('hDayLabel').textContent=`Tag ${cd} von ${DAYS_PER_WEEK}`;
 
   // ring
   const pct=(cw+1)/31;
-  const circ=2*Math.PI*17;
+  const circ=2*Math.PI*15;
   const arc=document.getElementById('ringArc');
-  if(arc){ arc.setAttribute('stroke-dasharray', circ); arc.setAttribute('stroke-dashoffset', circ*(1-pct)); }
+  arc.setAttribute('stroke-dasharray',circ);
+  arc.setAttribute('stroke-dashoffset',circ*(1-pct));
 
-  // next stem
-  let ns=0;
-  for(let s=0;s<wk.s.length;s++){ if(ge(cw,s).length===0){ns=s;break;} }
-  document.getElementById('hNextStem').textContent=`Satz ${ns+1} beginnen`;
-  document.getElementById('hNextHint').textContent=`Woche ${cw+1} · ${wk.t}`;
+  // day dots
+  const dots=document.getElementById('dayDots');
+  dots.innerHTML='';
+  for(let d=1;d<=DAYS_PER_WEEK;d++){
+    const dot=document.createElement('div');
+    const done=dayDone(cw,d);
+    const current=d===cd;
+    dot.style.cssText=`width:${current?32:10}px;height:10px;border-radius:10px;background:${done?'var(--green)':current?'var(--t1)':'var(--s3)'};transition:all .3s;`;
+    dots.appendChild(dot);
+  }
+
+  // today card - show first stem as preview
+  const firstStem=wk.s[0];
+  document.getElementById('todayLabel').textContent=`Woche ${cw+1} · Tag ${cd}`;
+  document.getElementById('todayStem').textContent=firstStem;
+
+  const todayAllDone=dayDone(cw,cd);
+  document.getElementById('todayDoneRow').style.display=todayAllDone?'flex':'none';
+  document.getElementById('todayBtn').style.display=todayAllDone?'none':'block';
+  if(todayAllDone){
+    const remaining=[1,2,3,4,5].filter(d=>!dayDone(cw,d));
+    if(remaining.length>0){
+      document.getElementById('todayDoneText').textContent=`Tag ${cd} erledigt · Noch ${remaining.length} Tage`;
+    } else if(getWknd(cw).length===0){
+      document.getElementById('todayDoneRow').innerHTML='<span class="today-done-icon">✓</span><span class="today-done-text">Alle 5 Tage erledigt – jetzt Wochenreflexion</span>';
+    } else {
+      document.getElementById('todayDoneText').textContent='Woche abgeschlossen ✓';
+    }
+  }
 }
 
-/* week list */
-function renderWList(){
-  const el=document.getElementById('wlistEl');
-  el.innerHTML='';
-  const cw=curWeek();
-  W.forEach((w,i)=>{
-    const cnt=wCnt(i);
-    const r=document.createElement('div');
-    r.className='wrow'+(i===cw?' cw':'');
-    r.innerHTML=`<div class="wr-n">${i+1}</div><div class="wr-info"><div class="wr-theme">${w.t}</div><div class="wr-sub">${w.s.length} Sätze${cnt>0?' · '+cnt+' Einträge':''}</div></div><div class="wr-arr">↗</div>`;
-    r.onclick=()=>{ vw=i; renderDetail(i); show('weekdetail'); };
-    el.appendChild(r);
-  });
-}
-
-/* week detail */
-function renderDetail(wi){
-  const wk=W[wi];
-  document.getElementById('dtitle').textContent=`Woche ${wi+1}`;
-  document.getElementById('dBig').textContent=wi+1;
-  document.getElementById('dTheme').textContent=wk.t;
-  document.getElementById('dStems').textContent=`${wk.s.length} Satzstämme`;
-  document.getElementById('dCnt').textContent=wCnt(wi);
-  const list=document.getElementById('slistEl');
-  list.innerHTML='';
-  wk.s.forEach((stem,si)=>{
-    const cnt=ge(wi,si).length;
-    const r=document.createElement('div');
-    r.className='srow';
-    r.innerHTML=`<div class="sr-lbl">Satz ${si+1}</div><div class="sr-text">${stem}</div><div class="sr-cnt ${cnt>0?'has':''}">${cnt>0?cnt+' Einträge · ':''}Tippen zum Starten</div>`;
-    r.onclick=()=>openFocus(wi,si);
-    list.appendChild(r);
-  });
-}
-
-/* focus */
-function openFocus(wi,si){
-  fw=wi; fs=si;
+function startToday(){
+  fw=db.currentWeek; fs=0; fd=db.currentDay;
   renderFocus();
   show('focus');
   setTimeout(()=>document.getElementById('fInput').focus(),200);
 }
 
-function closeFocus(){
-  renderDetail(vw);
-  renderHome();
-  show('weekdetail');
+/* ══════ WEEK LIST ══════ */
+function renderWList(){
+  const el=document.getElementById('wlistEl');
+  el.innerHTML='';
+  W.forEach((w,i)=>{
+    const done=weekDone(i);
+    const active=i===db.currentWeek;
+    const r=document.createElement('div');
+    r.className='wrow'+(active?' active-week':'')+(done?' done-week':'');
+    const totalW=Object.keys(db.entries).filter(k=>k.startsWith(`w${i}_`)).reduce((a,k)=>a+(db.entries[k]||[]).length,0);
+    r.innerHTML=`
+      <div class="wr-n">${i+1}</div>
+      <div class="wr-info">
+        <div class="wr-theme">${w.t}</div>
+        <div class="wr-sub">${w.s.length} Sätze · 5 Tage${totalW>0?' · '+totalW+' Einträge':''}</div>
+      </div>
+      <div class="wr-right">
+        ${done?'<span class="check">✓</span>':'<span class="wr-arr">↗</span>'}
+      </div>`;
+    r.onclick=()=>{ vw=i; renderDetail(i); show('weekdetail'); };
+    el.appendChild(r);
+  });
 }
 
+/* ══════ WEEK DETAIL ══════ */
+function renderDetail(wi){
+  const wk=W[wi];
+  const done=weekDone(wi);
+  document.getElementById('dtitle').textContent=`Woche ${wi+1}`;
+  document.getElementById('dBig').textContent=wi+1;
+  document.getElementById('dTheme').textContent=wk.t;
+  document.getElementById('dStems').textContent=`${wk.s.length} Satzstämme · 5 Tage`;
+  document.getElementById('dCheckmark').style.display=done?'block':'none';
+
+  // count total entries for this week
+  const total=Object.keys(db.entries).filter(k=>k.startsWith(`w${wi}_`)).reduce((a,k)=>a+(db.entries[k]||[]).length,0);
+  document.getElementById('dCnt').textContent=total;
+
+  // day tabs - default to current day if this is current week, else day 1
+  const defaultDay = wi===db.currentWeek ? db.currentDay : 1;
+  renderDetailForDay(wi, defaultDay);
+
+  // weekend
+  const wkndList=getWknd(wi);
+  const wkndCnt=document.getElementById('wkndCnt');
+  if(wkndList.length>0){
+    wkndCnt.style.display='block';
+    wkndCnt.textContent=`${wkndList.length} Antworten`;
+  } else {
+    wkndCnt.style.display='none';
+  }
+}
+
+function renderDetailForDay(wi, day){
+  const wk=W[wi];
+  // day tabs
+  const tabs=document.getElementById('detailDayTabs');
+  tabs.innerHTML='';
+  for(let d=1;d<=DAYS_PER_WEEK;d++){
+    const btn=document.createElement('button');
+    const done=dayDone(wi,d);
+    btn.className='day-tab'+(d===day?' on':'')+(done?' done-day':'');
+    btn.textContent=`Tag ${d}`;
+    btn.onclick=(()=>{ const dd=d; return ()=>renderDetailForDay(wi,dd); })();
+    tabs.appendChild(btn);
+  }
+
+  // stem list
+  const list=document.getElementById('slistEl');
+  list.innerHTML='';
+  wk.s.forEach((stem,si)=>{
+    const entries=getE(wi,si,day);
+    const cnt=entries.length;
+    const r=document.createElement('div');
+    r.className='srow';
+    r.innerHTML=`
+      <div class="sr-lbl">Satz ${si+1}</div>
+      <div class="sr-text">${stem}</div>
+      <div class="sr-cnt ${cnt>=6?'has':cnt>0?'has':''}">${cnt>=6?'✓ '+cnt+' Antworten':cnt>0?cnt+' Antworten · weiter':'Tippen zum Starten'}</div>`;
+    r.onclick=()=>{ fw=wi; fs=si; fd=day; renderFocus(); show('focus'); setTimeout(()=>document.getElementById('fInput').focus(),200); };
+    list.appendChild(r);
+  });
+}
+
+/* ══════ FOCUS ══════ */
 function renderFocus(){
-  document.getElementById('fTitle').textContent=`Woche ${fw+1} · Satz ${fs+1}`;
+  document.getElementById('fTitle').textContent=`Woche ${fw+1} · Tag ${fd}`;
   document.getElementById('fStem').textContent=W[fw].s[fs];
   document.getElementById('fInput').value='';
+  renderFStemTabs();
+  renderFDayNav();
   renderFEntries();
-  renderFNav();
+}
+
+function renderFStemTabs(){
+  const nav=document.getElementById('fStemTabs');
+  nav.innerHTML='';
+  W[fw].s.forEach((_,i)=>{
+    const btn=document.createElement('button');
+    btn.className='f-tab'+(i===fs?' on':'');
+    btn.textContent=`${i+1}`;
+    btn.onclick=()=>{ fs=i; renderFocus(); setTimeout(()=>document.getElementById('fInput').focus(),50); };
+    nav.appendChild(btn);
+  });
+}
+
+function renderFDayNav(){
+  const nav=document.getElementById('fDayNav');
+  nav.innerHTML='';
+  for(let d=1;d<=DAYS_PER_WEEK;d++){
+    const btn=document.createElement('button');
+    const has=getE(fw,fs,d).length>0;
+    btn.className='f-day-btn'+(d===fd?' on':'')+(has?' has':'');
+    btn.textContent=`Tag ${d}`;
+    btn.onclick=(()=>{ const dd=d; return ()=>{ fd=dd; renderFDayNav(); renderFEntries(); document.getElementById('fTitle').textContent=`Woche ${fw+1} · Tag ${fd}`; }; })();
+    nav.appendChild(btn);
+  }
 }
 
 function renderFEntries(){
-  const list=ge(fw,fs);
+  const list=getE(fw,fs,fd);
   const el=document.getElementById('fEntries');
   el.innerHTML='';
   if(list.length===0){
@@ -776,73 +755,115 @@ function renderFEntries(){
   ctr.className='f-counter'+(list.length>=6?' ok':'');
 }
 
-function renderFNav(){
-  const nav=document.getElementById('fNav');
-  nav.innerHTML='';
-  W[fw].s.forEach((_,i)=>{
-    const btn=document.createElement('button');
-    btn.className='f-tab'+(i===fs?' on':'');
-    btn.textContent=`${i+1}`;
-    btn.onclick=()=>{ fs=i; renderFocus(); setTimeout(()=>document.getElementById('fInput').focus(),50); };
-    nav.appendChild(btn);
-  });
-}
-
 function fAdd(){
   const inp=document.getElementById('fInput');
   const txt=inp.value.trim();
-  if(!txt)return;
-  const l=ge(fw,fs);
+  if(!txt) return;
+  const l=getE(fw,fs,fd);
   l.push(txt);
-  se(fw,fs,l);
+  setE(fw,fs,fd,l);
   inp.value='';
   renderFEntries();
+  renderFDayNav();
   inp.focus();
 }
 
 function fDel(i){
-  const l=ge(fw,fs);
+  const l=getE(fw,fs,fd);
   l.splice(i,1);
-  se(fw,fs,l);
+  setE(fw,fs,fd,l);
   renderFEntries();
 }
 
 function fKey(e){ if(e.key==='Enter'){e.preventDefault();fAdd();} }
 
+function closeFocus(){
+  // advance day if all stems done for current day
+  if(fw===db.currentWeek && fd===db.currentDay){
+    const allStemsDone=W[fw].s.every((_,s)=>getE(fw,s,fd).length>=6);
+    if(allStemsDone && db.currentDay<DAYS_PER_WEEK){
+      db.currentDay++;
+      save();
+    }
+  }
+  renderDetail(vw);
+  renderHome();
+  show('weekdetail');
+}
+
+/* ══════ WEEKEND REFLECTION ══════ */
+function openWeekendReflection(){
+  renderWknd();
+  show('weekend');
+  setTimeout(()=>document.getElementById('wkndInput').focus(),200);
+}
+
+function renderWknd(){
+  const list=getWknd(vw);
+  const el=document.getElementById('wkndEntries');
+  el.innerHTML='';
+  if(list.length===0){
+    el.innerHTML='<div style="font-size:14px;color:var(--t3);padding:4px 0;">Noch keine Antworten.</div>';
+  } else {
+    list.forEach((txt,i)=>{
+      const d=document.createElement('div');
+      d.className='fentry';
+      d.innerHTML=`<span class="fe-n">${i+1}</span><span class="fe-t">${esc(txt)}</span><button class="fe-del" onclick="wkndDel(${i})">×</button>`;
+      el.appendChild(d);
+    });
+  }
+  const ctr=document.getElementById('wkndCtr');
+  ctr.textContent=`${list.length} / 6`;
+  ctr.className='f-counter'+(list.length>=6?' ok':'');
+}
+
+function wkndAdd(){
+  const inp=document.getElementById('wkndInput');
+  const txt=inp.value.trim();
+  if(!txt) return;
+  const l=getWknd(vw);
+  l.push(txt);
+  setWknd(vw,l);
+  inp.value='';
+  renderWknd();
+  // if week now done, advance to next week
+  if(weekDone(vw) && vw===db.currentWeek && db.currentWeek<W.length-1){
+    db.currentWeek++;
+    db.currentDay=1;
+    save();
+  }
+  inp.focus();
+}
+
+function wkndDel(i){
+  const l=getWknd(vw);
+  l.splice(i,1);
+  setWknd(vw,l);
+  renderWknd();
+}
+
+function wkndKey(e){ if(e.key==='Enter'){e.preventDefault();wkndAdd();} }
+
+/* ══════ INIT ══════ */
 load();
-// restore theme
-try { if(localStorage.getItem('sw_theme')==='light'){ document.body.classList.add('light'); document.getElementById('themeBtn').textContent='◐'; } } catch(e){}
+try{
+  if(localStorage.getItem('sw_theme')==='light'){
+    document.body.classList.add('light');
+    document.getElementById('themeBtn').textContent='◐';
+  }
+}catch(e){}
 renderHome();
 
-// ── SERVICE WORKER (offline) ──
+// service worker
 if('serviceWorker' in navigator){
-  const swCode = `
-const CACHE = 'selbstwert-v1';
-self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE).then(c => c.addAll([location.href || '/']))
-  );
-  self.skipWaiting();
-});
-self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(keys =>
-    Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))
-  ));
-  self.clients.claim();
-});
-self.addEventListener('fetch', e => {
-  e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request).then(res => {
-      const clone = res.clone();
-      caches.open(CACHE).then(c => c.put(e.request, clone));
-      return res;
-    }).catch(() => cached))
-  );
-});
+  const sw=`
+const C='sw3';
+self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.add('/')));self.skipWaiting();});
+self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});
+self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));});
   `;
-  const blob = new Blob([swCode], {type:'application/javascript'});
-  const swUrl = URL.createObjectURL(blob);
-  navigator.serviceWorker.register(swUrl).catch(()=>{});
+  const blob=new Blob([sw],{type:'application/javascript'});
+  navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
 }
 </script>
 
