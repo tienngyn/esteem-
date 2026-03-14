@@ -380,45 +380,42 @@ html, body {
 
   <div class="grid" style="margin-bottom:12px;">
 
-  <div class="card-row">
-    <!-- current week -->
-    <div class="card" onclick="goCurrentWeek()">
-      <div class="c-label">Aktuelle Woche</div>
-      <div class="ring-row">
-        <div class="ring">
-          <svg width="38" height="38" viewBox="0 0 38 38">
-            <circle cx="19" cy="19" r="14" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="2.5"/>
-            <circle id="ringArc" cx="19" cy="19" r="14" fill="none" stroke="white" stroke-width="2.5"
-              stroke-dasharray="88" stroke-dashoffset="85" stroke-linecap="round"/>
-          </svg>
-          <div class="ring-n" id="rn">1</div>
-        </div>
-        <div>
-          <div style="font-size:13px;font-weight:600;" id="hTheme">–</div>
-        </div>
-      </div>
-      <div style="margin-top:14px;">
-        <div class="c-big" style="font-size:28px;letter-spacing:-1px;" id="hWeek">Woche 1</div>
-        <div class="c-sub">von 31 Wochen</div>
-      </div>
-      <div class="c-arr">↗</div>
-    </div>
+  <!-- current week -->
 
 ```
+<div class="card" onclick="goCurrentWeek()">
+  <div class="c-label">Aktuelle Woche</div>
+  <div style="display:flex; align-items:center; justify-content:space-between;">
+    <div>
+      <div class="c-big" style="font-size:28px;letter-spacing:-1px;" id="hWeek">Woche 1</div>
+      <div class="c-sub" id="hTheme">–</div>
+    </div>
+    <div class="ring">
+      <svg width="44" height="44" viewBox="0 0 44 44">
+        <circle cx="22" cy="22" r="17" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="2.5"/>
+        <circle id="ringArc" cx="22" cy="22" r="17" fill="none" stroke="white" stroke-width="2.5"
+          stroke-dasharray="107" stroke-dashoffset="104" stroke-linecap="round" style="transform:rotate(-90deg);transform-origin:22px 22px;"/>
+      </svg>
+      <div class="ring-n" id="rn" style="font-size:14px;">1</div>
+    </div>
+  </div>
+</div>
+
 <!-- entries -->
 <div class="card" onclick="goCurrentWeek()">
-  <div class="c-label">Einträge</div>
-  <div class="c-big" id="hTotal">0</div>
-  <div style="margin-top:14px;">
-    <div class="c-sub" id="hStemsDone">0 Sätze bearbeitet</div>
+  <div style="display:flex; align-items:center; justify-content:space-between;">
+    <div>
+      <div class="c-label">Einträge gesamt</div>
+      <div class="c-big" id="hTotal">0</div>
+    </div>
+    <div style="text-align:right;">
+      <div class="c-label">Bearbeitet</div>
+      <div style="font-size:28px;font-weight:700;letter-spacing:-1px;" id="hStemsDone2">0</div>
+      <div class="c-sub">Sätze</div>
+    </div>
   </div>
-  <div class="c-arr">✦</div>
 </div>
-```
 
-  </div>
-
-```
 <!-- next stem -->
 <div class="card card-full" onclick="goCurrentWeek()" style="cursor:pointer;">
   <div class="c-label">Nächster Satz</div>
@@ -603,16 +600,16 @@ function renderHome(){
   document.getElementById('rn').textContent=cw+1;
   document.getElementById('rn2').textContent=cw+1;
   document.getElementById('hTotal').textContent=total();
-  document.getElementById('hStemsDone').textContent=`${wStemsDone(cw)} Sätze bearbeitet`;
+  if(document.getElementById('hStemsDone')) document.getElementById('hStemsDone').textContent=`${wStemsDone(cw)} Sätze bearbeitet`;
+  document.getElementById('hStemsDone2').textContent=wStemsDone(cw);
   document.getElementById('hGrand').innerHTML=`${total()} <sub>Sätze</sub>`;
 
   // ring
   const pct=(cw+1)/31;
-  const circ=2*Math.PI*14;
+  const circ=2*Math.PI*17;
   const arc=document.getElementById('ringArc');
+  arc.setAttribute('stroke-dasharray', circ);
   arc.setAttribute('stroke-dashoffset', circ*(1-pct));
-  arc.style.transform='rotate(-90deg)';
-  arc.style.transformOrigin='19px 19px';
 
   // next stem
   let ns=0;
