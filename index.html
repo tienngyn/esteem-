@@ -134,8 +134,10 @@ html, body {
 }
 .icon-btn:hover { background: var(--s3); }
 
-.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
-.grid .card { min-width: 0; }
+.grid { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+.grid .card { min-width: 0; width: 100%; }
+.card-row { display: flex; gap: 12px; }
+.card-row .card { flex: 1; min-width: 0; }
 
 .card {
   background: var(--s1);
@@ -150,7 +152,7 @@ html, body {
 }
 .card:hover { background: var(--s2); }
 .card:active { transform: scale(.97); }
-.card-full { grid-column: 1 / -1; }
+.card-full { width: 100%; }
 
 .c-label {
   font-size: 11px; font-weight: 500;
@@ -378,30 +380,31 @@ html, body {
 
   <div class="grid" style="margin-bottom:12px;">
 
-```
-<!-- current week -->
-<div class="card" onclick="goCurrentWeek()">
-  <div class="c-label">Aktuelle Woche</div>
-  <div class="ring-row">
-    <div class="ring">
-      <svg width="38" height="38" viewBox="0 0 38 38">
-        <circle cx="19" cy="19" r="14" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="2.5"/>
-        <circle id="ringArc" cx="19" cy="19" r="14" fill="none" stroke="white" stroke-width="2.5"
-          stroke-dasharray="88" stroke-dashoffset="85" stroke-linecap="round"/>
-      </svg>
-      <div class="ring-n" id="rn">1</div>
+  <div class="card-row">
+    <!-- current week -->
+    <div class="card" onclick="goCurrentWeek()">
+      <div class="c-label">Aktuelle Woche</div>
+      <div class="ring-row">
+        <div class="ring">
+          <svg width="38" height="38" viewBox="0 0 38 38">
+            <circle cx="19" cy="19" r="14" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="2.5"/>
+            <circle id="ringArc" cx="19" cy="19" r="14" fill="none" stroke="white" stroke-width="2.5"
+              stroke-dasharray="88" stroke-dashoffset="85" stroke-linecap="round"/>
+          </svg>
+          <div class="ring-n" id="rn">1</div>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:600;" id="hTheme">–</div>
+        </div>
+      </div>
+      <div style="margin-top:14px;">
+        <div class="c-big" style="font-size:28px;letter-spacing:-1px;" id="hWeek">Woche 1</div>
+        <div class="c-sub">von 31 Wochen</div>
+      </div>
+      <div class="c-arr">↗</div>
     </div>
-    <div>
-      <div style="font-size:13px;font-weight:600;" id="hTheme">–</div>
-    </div>
-  </div>
-  <div style="margin-top:14px;">
-    <div class="c-big" style="font-size:28px;letter-spacing:-1px;" id="hWeek">Woche 1</div>
-    <div class="c-sub">von 31 Wochen</div>
-  </div>
-  <div class="c-arr">↗</div>
-</div>
 
+```
 <!-- entries -->
 <div class="card" onclick="goCurrentWeek()">
   <div class="c-label">Einträge</div>
@@ -411,7 +414,11 @@ html, body {
   </div>
   <div class="c-arr">✦</div>
 </div>
+```
 
+  </div>
+
+```
 <!-- next stem -->
 <div class="card card-full" onclick="goCurrentWeek()" style="cursor:pointer;">
   <div class="c-label">Nächster Satz</div>
