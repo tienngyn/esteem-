@@ -67,6 +67,17 @@
   --font: -apple-system, 'Helvetica Neue', sans-serif;
 }
 
+body.light {
+  --bg: #F2F2F7;
+  --s1: #fff;
+  --s2: #E5E5EA;
+  --s3: #D1D1D6;
+  --t1: #000;
+  --t2: rgba(0,0,0,0.5);
+  --t3: rgba(0,0,0,0.25);
+  --border: rgba(0,0,0,0.06);
+}
+
 html, body {
   background: var(--bg);
   color: var(--t1);
@@ -74,9 +85,10 @@ html, body {
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  transition: background 0.3s, color 0.3s;
 }
 
-.screen { display: none; min-height: 100vh; flex-direction: column; }
+.screen { display: none; min-height: 100vh; flex-direction: column; background: var(--bg); transition: background 0.3s; }
 .screen.active { display: flex; }
 
 /* ── shared layout ── */
@@ -332,8 +344,7 @@ html, body {
 
 .fe-n { font-size: 12px; color: var(--t3); min-width: 18px; }
 .fe-t { font-size: 15px; font-weight: 300; color: var(--t1); flex: 1; line-height: 1.5; word-break: break-word; }
-.fe-del { background: none; border: none; color: var(--t3); font-size: 16px; cursor: pointer; opacity: 0; transition: opacity .15s; padding: 2px 4px; line-height: 1; }
-.fentry:hover .fe-del { opacity: 1; }
+.fe-del { background: none; border: none; color: var(--t3); font-size: 18px; cursor: pointer; padding: 4px 6px; line-height: 1; flex-shrink: 0; }
 
 /* input card */
 .f-input-card {
@@ -375,75 +386,57 @@ html, body {
       <div class="app-title">Selbstwert</div>
       <div class="app-sub">31-Wochen-Programm</div>
     </div>
-    <button class="icon-btn" onclick="show('weeklist')">☰</button>
+    <div style="display:flex;gap:8px;">
+      <button class="icon-btn" onclick="toggleTheme()" id="themeBtn">☀</button>
+      <button class="icon-btn" onclick="show('guide')" title="Anleitung">?</button>
+      <button class="icon-btn" onclick="show('weeklist')">☰</button>
+    </div>
   </div>
 
   <div class="grid" style="margin-bottom:12px;">
 
-  <!-- current week -->
-
 ```
+<!-- current week -->
 <div class="card" onclick="goCurrentWeek()">
   <div class="c-label">Aktuelle Woche</div>
-  <div style="display:flex; align-items:center; justify-content:space-between;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;">
     <div>
-      <div class="c-big" style="font-size:28px;letter-spacing:-1px;" id="hWeek">Woche 1</div>
-      <div class="c-sub" id="hTheme">–</div>
+      <div style="font-size:32px;font-weight:700;letter-spacing:-1px;line-height:1.1;" id="hWeek">Woche 1</div>
+      <div class="c-sub" style="margin-top:4px;" id="hTheme">–</div>
     </div>
     <div class="ring">
       <svg width="44" height="44" viewBox="0 0 44 44">
-        <circle cx="22" cy="22" r="17" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="2.5"/>
-        <circle id="ringArc" cx="22" cy="22" r="17" fill="none" stroke="white" stroke-width="2.5"
+        <circle cx="22" cy="22" r="17" fill="none" stroke="rgba(128,128,128,.25)" stroke-width="2.5"/>
+        <circle id="ringArc" cx="22" cy="22" r="17" fill="none" stroke="var(--t1)" stroke-width="2.5"
           stroke-dasharray="107" stroke-dashoffset="104" stroke-linecap="round" style="transform:rotate(-90deg);transform-origin:22px 22px;"/>
       </svg>
-      <div class="ring-n" id="rn" style="font-size:14px;">1</div>
+      <div class="ring-n" id="rn" style="font-size:13px;font-weight:700;">1</div>
     </div>
   </div>
-</div>
-
-<!-- entries -->
-<div class="card" onclick="goCurrentWeek()">
-  <div style="display:flex; align-items:center; justify-content:space-between;">
-    <div>
-      <div class="c-label">Einträge gesamt</div>
-      <div class="c-big" id="hTotal">0</div>
-    </div>
-    <div style="text-align:right;">
-      <div class="c-label">Bearbeitet</div>
-      <div style="font-size:28px;font-weight:700;letter-spacing:-1px;" id="hStemsDone2">0</div>
-      <div class="c-sub">Sätze</div>
-    </div>
-  </div>
+  <div style="font-size:12px;color:var(--t3);margin-top:10px;">von 31 Wochen</div>
 </div>
 
 <!-- next stem -->
-<div class="card card-full" onclick="goCurrentWeek()" style="cursor:pointer;">
+<div class="card" onclick="goCurrentWeek()">
   <div class="c-label">Nächster Satz</div>
-  <div class="ring-row">
-    <div class="ring">
-      <svg width="38" height="38" viewBox="0 0 38 38">
-        <circle cx="19" cy="19" r="14" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="2.5"/>
-        <circle id="ringArc2" cx="19" cy="19" r="14" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="2.5"
-          stroke-dasharray="88" stroke-dashoffset="66" stroke-linecap="round" style="transform:rotate(-90deg);transform-origin:19px 19px;"/>
-      </svg>
-      <div class="ring-n" id="rn2" style="font-size:12px;">1</div>
-    </div>
-    <div style="flex:1;">
-      <div style="font-size:15px;font-weight:600;" id="hNextStem">Satz 1 beginnen</div>
-      <div style="font-size:12px;color:var(--t2);" id="hNextHint">Woche 1</div>
-    </div>
-    <div style="color:var(--t3);font-size:14px;">↗</div>
+  <div style="margin-top:4px;">
+    <div style="font-size:15px;font-weight:600;line-height:1.4;" id="hNextStem">Satz 1 beginnen</div>
+    <div style="font-size:12px;color:var(--t3);margin-top:6px;" id="hNextHint">Woche 1</div>
   </div>
+  <div style="font-size:20px;color:var(--t3);margin-top:12px;">↗</div>
 </div>
 
-<!-- total -->
+<!-- stats -->
 <div class="card card-full">
-  <div class="stat-row">
-    <div class="stat-l">
-      <div class="stat-name">Gesamte Einträge</div>
-      <div class="stat-hint">Alle 31 Wochen</div>
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <div>
+      <div class="c-label">Einträge gesamt</div>
+      <div style="font-size:38px;font-weight:700;letter-spacing:-1.5px;line-height:1;" id="hTotal">0</div>
     </div>
-    <div class="stat-val" id="hGrand">0 <sub>Sätze</sub></div>
+    <div style="text-align:right;">
+      <div class="c-label">Sätze bearbeitet</div>
+      <div style="font-size:38px;font-weight:700;letter-spacing:-1.5px;line-height:1;" id="hStemsDone2">0</div>
+    </div>
   </div>
 </div>
 ```
@@ -494,8 +487,93 @@ html, body {
 </div>
 </div>
 
-<!-- ═══ FOCUS ═══ -->
+<!-- ═══ GUIDE ═══ -->
 
+<div id="guide" class="screen">
+<div class="page">
+  <div class="nav-bar">
+    <button class="back-btn" onclick="show('home')">←</button>
+    <div class="page-title">Anleitung</div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:12px;">
+
+```
+<div class="card" style="cursor:default;">
+  <div class="c-label">Was ist das hier?</div>
+  <div style="font-size:15px;line-height:1.7;color:var(--t1);margin-top:6px;">
+    Dieses Programm basiert auf <em style="font-style:italic;">The Six Pillars of Self-Esteem</em> von Nathaniel Branden. Die Kernidee: Selbstwertgefühl kann nicht direkt aufgebaut werden – es entsteht als Ergebnis konkreter innerer Praktiken.
+  </div>
+</div>
+
+<div class="card" style="cursor:default;">
+  <div class="c-label">Die Methode</div>
+  <div style="font-size:15px;line-height:1.7;color:var(--t1);margin-top:6px;">
+    Du vervollständigst unvollständige Sätze – so schnell wie möglich, ohne nachzudenken, ohne zu zensieren. Kein Richtig oder Falsch. Dein Ziel sind <strong>6–10 Antworten pro Satz</strong>. Der Prozess bringt unbewusstes Material an die Oberfläche.
+  </div>
+</div>
+
+<div class="card" style="cursor:default;">
+  <div class="c-label">So gehst du vor</div>
+  <div style="font-size:15px;line-height:1.7;color:var(--t1);margin-top:6px;">
+    <strong>Morgens</strong> – öffne die aktuelle Woche und schreib 6–10 Antworten pro Satzstamm. Das dauert ca. 10 Minuten.<br><br>
+    <strong>Abends</strong> – optional: lies nochmal was du morgens geschrieben hast.<br><br>
+    <strong>Wochenende</strong> – lies alles der Woche durch und beantworte: <em style="font-style:italic;">„Wenn irgendetwas davon wahr ist, wäre es hilfreich, wenn ich …"</em>
+  </div>
+</div>
+
+<div class="card" style="cursor:default;">
+  <div class="c-label">Wichtige Regeln</div>
+  <div style="font-size:15px;line-height:1.7;color:var(--t1);margin-top:6px;">
+    · Schreib so schnell du kannst – kein Pausieren<br>
+    · Nicht bewerten ob es „wahr" oder „tief" ist<br>
+    · Wenn nichts kommt: einfach irgendetwas erfinden<br>
+    · Nie weniger als 6 Antworten pro Satz<br>
+    · Lies nicht nach was du gestern geschrieben hast
+  </div>
+</div>
+
+<div class="card" style="cursor:default;">
+  <div class="c-label">Die 6 Säulen</div>
+  <div style="font-size:15px;line-height:1.7;color:var(--t1);margin-top:6px;">
+    <strong>1. Bewusst leben</strong> – den Verstand aktiv einsetzen, Fakten akzeptieren<br><br>
+    <strong>2. Selbstakzeptanz</strong> – sich nicht in einer feindseligen Beziehung zu sich selbst sein (Wochen 1–10)<br><br>
+    <strong>3. Selbstverantwortung</strong> – das eigene Leben als persönliche Aufgabe begreifen (Wochen 11–13)<br><br>
+    <strong>4. Selbstbehauptung</strong> – die eigene Identität und Werte im Alltag leben (Wochen 14–15)<br><br>
+    <strong>5. Zielgerichtet leben</strong> – konkrete Ziele und Handlungen (Wochen 16–17)<br><br>
+    <strong>6. Integrität</strong> – so leben wie man es von sich selbst fordert (Wochen 18–19)
+  </div>
+</div>
+
+<div class="card" style="cursor:default;">
+  <div class="c-label">Spiegelübung</div>
+  <div style="font-size:15px;line-height:1.7;color:var(--t1);margin-top:6px;">
+    Täglich 2 Minuten vor dem Ganzkörperspiegel stehen und laut sagen:<br><br>
+    <em style="font-style:italic;color:var(--t2);">„Was auch immer meine Schwächen oder Unzulänglichkeiten sind – ich akzeptiere mich vollständig und ohne Vorbehalt."</em><br><br>
+    Morgens und abends, 2 Wochen lang. Branden empfiehlt dies parallel zu den Satzergänzungen.
+  </div>
+</div>
+
+<div class="card" style="cursor:default;">
+  <div class="c-label">Bei Widerstand</div>
+  <div style="font-size:15px;line-height:1.7;color:var(--t1);margin-top:6px;">
+    Wenn ein unangenehmes Gefühl auftaucht – nicht wegdrücken. Lokalisiere es im Körper, atme tief und bleib dabei. Sag dir: <em style="font-style:italic;">„Ich erlebe gerade [Gefühl], und ich akzeptiere, dass das da ist."</em><br><br>
+    Wenn Selbstakzeptanz sich unmöglich anfühlt: akzeptiere den Widerstand selbst. Kämpf nicht gegen den Block – das verstärkt ihn nur.
+  </div>
+</div>
+
+<div class="card" style="cursor:default;margin-bottom:8px;">
+  <div class="c-label">Der wichtigste Satz</div>
+  <div style="font-size:17px;line-height:1.7;color:var(--t1);margin-top:6px;font-style:italic;">
+    „Selbstakzeptanz ist die Voraussetzung für Veränderung und Wachstum. Ich kann von einem Fehler nicht lernen, den ich nicht akzeptieren kann, gemacht zu haben."
+  </div>
+  <div style="font-size:12px;color:var(--t3);margin-top:8px;">— Nathaniel Branden</div>
+</div>
+```
+
+  </div>
+</div>
+</div>
 <div id="focus" class="screen">
 <div class="page">
   <div class="nav-bar">
@@ -592,24 +670,28 @@ function goCurrentWeek(){
   show('weekdetail');
 }
 
+function toggleTheme(){
+  document.body.classList.toggle('light');
+  const isLight = document.body.classList.contains('light');
+  document.getElementById('themeBtn').textContent = isLight ? '◐' : '☀';
+  try { localStorage.setItem('sw_theme', isLight ? 'light' : 'dark'); } catch(e){}
+}
+
 /* home */
 function renderHome(){
   const cw=curWeek(), wk=W[cw];
   document.getElementById('hWeek').textContent=`Woche ${cw+1}`;
   document.getElementById('hTheme').textContent=wk.t;
-  document.getElementById('rn').textContent=cw+1;
-  document.getElementById('rn2').textContent=cw+1;
+  if(document.getElementById('rn')) document.getElementById('rn').textContent=cw+1;
   document.getElementById('hTotal').textContent=total();
   if(document.getElementById('hStemsDone')) document.getElementById('hStemsDone').textContent=`${wStemsDone(cw)} Sätze bearbeitet`;
   document.getElementById('hStemsDone2').textContent=wStemsDone(cw);
-  document.getElementById('hGrand').innerHTML=`${total()} <sub>Sätze</sub>`;
 
   // ring
   const pct=(cw+1)/31;
   const circ=2*Math.PI*17;
   const arc=document.getElementById('ringArc');
-  arc.setAttribute('stroke-dasharray', circ);
-  arc.setAttribute('stroke-dashoffset', circ*(1-pct));
+  if(arc){ arc.setAttribute('stroke-dasharray', circ); arc.setAttribute('stroke-dashoffset', circ*(1-pct)); }
 
   // next stem
   let ns=0;
@@ -728,6 +810,8 @@ function fDel(i){
 function fKey(e){ if(e.key==='Enter'){e.preventDefault();fAdd();} }
 
 load();
+// restore theme
+try { if(localStorage.getItem('sw_theme')==='light'){ document.body.classList.add('light'); document.getElementById('themeBtn').textContent='◐'; } } catch(e){}
 renderHome();
 
 // ── SERVICE WORKER (offline) ──
