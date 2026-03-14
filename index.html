@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Selbstwert</title>
+
+<!-- PWA -->
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Selbstwert">
+<meta name="theme-color" content="#000000">
+<meta name="mobile-web-app-capable" content="yes">
+
+<!-- App Icon (generiert als inline SVG → PNG via canvas) -->
+
+<link rel="apple-touch-icon" id="appIcon">
+<link rel="icon" id="favicon">
+
+<script>
+// Generate app icon as canvas and set as link
+(function(){
+  const c = document.createElement('canvas');
+  c.width = 512; c.height = 512;
+  const ctx = c.getContext('2d');
+  // background
+  const r = 110;
+  ctx.beginPath();
+  ctx.moveTo(r,0); ctx.lineTo(512-r,0);
+  ctx.quadraticCurveTo(512,0,512,r);
+  ctx.lineTo(512,512-r);
+  ctx.quadraticCurveTo(512,512,512-r,512);
+  ctx.lineTo(r,512);
+  ctx.quadraticCurveTo(0,512,0,512-r);
+  ctx.lineTo(0,r);
+  ctx.quadraticCurveTo(0,0,r,0);
+  ctx.closePath();
+  ctx.fillStyle = '#1C1C1E';
+  ctx.fill();
+  // S letter
+  ctx.font = 'bold 300px -apple-system, Helvetica';
+  ctx.fillStyle = '#ffffff';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('S', 256, 270);
+  const url = c.toDataURL('image/png');
+  document.getElementById('appIcon').href = url;
+  document.getElementById('favicon').href = url;
+})();
+</script>
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #000;
+  --s1: #1C1C1E;
+  --s2: #2C2C2E;
+  --s3: #3A3A3C;
+  --t1: #fff;
+  --t2: rgba(255,255,255,0.55);
+  --t3: rgba(255,255,255,0.28);
+  --border: rgba(255,255,255,0.07);
+  --r: 18px;
+  --font: -apple-system, 'Helvetica Neue', sans-serif;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--t1);
+  font-family: var(--font);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+.screen { display: none; min-height: 100vh; flex-direction: column; }
+.screen.active { display: flex; }
+
+/* ── shared layout ── */
+.page {
+  padding: max(56px, calc(44px + env(safe-area-inset-top))) 20px max(40px, calc(20px + env(safe-area-inset-bottom)));
+  max-width: 430px;
+  margin: 0 auto;
+  width: 100%;
+  flex: 1;
+}
+
+/* ── nav header ── */
+.nav-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.back-btn {
+  width: 32px; height: 32px;
+  background: var(--s2);
+  border: none; border-radius: 50%;
+  cursor: pointer; color: var(--t1);
+  font-size: 15px; display: flex;
+  align-items: center; justify-content: center;
+  flex-shrink: 0; transition: background .15s;
+}
+.back-btn:hover { background: var(--s3); }
+
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -.4px;
+}
+
+/* ── HOME ── */
+.home-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 28px;
+}
+
+.app-title { font-size: 34px; font-weight: 700; letter-spacing: -.6px; }
+.app-sub { font-size: 13px; color: var(--t2); margin-top: 3px; }
+
+.icon-btn {
+  width: 36px; height: 36px;
+  background: var(--s2); border: none; border-radius: 50%;
+  cursor: pointer; color: var(--t1);
+  font-size: 16px; display: flex;
+  align-items: center; justify-content: center;
+  transition: background .15s; flex-shrink: 0;
+}
+.icon-btn:hover { background: var(--s3); }
+
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.card {
+  background: var(--s1);
+  border-radius: var(--r);
+  padding: 18px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: transform .12s, background .15s;
+  position: relative; overflow: hidden;
+}
+.card:hover { background: var(--s2); }
+.card:active { transform: scale(.97); }
+.card-full { grid-column: 1 / -1; }
+
+.c-label {
+  font-size: 11px; font-weight: 500;
+  color: var(--t2); letter-spacing: .08em;
+  text-transform: uppercase; margin-bottom: 10px;
+}
+
+.c-big {
+  font-size: 46px; font-weight: 700;
+  letter-spacing: -2px; line-height: 1;
+}
+.c-big sub { font-size: 17px; font-weight: 400; color: var(--t2); letter-spacing: 0; vertical-align: baseline; }
+
+.c-title { font-size: 16px; font-weight: 600; letter-spacing: -.2px; }
+.c-sub { font-size: 13px; color: var(--t2); margin-top: 2px; }
+.c-arr { position: absolute; top: 16px; right: 16px; color: var(--t3); font-size: 14px; }
+
+/* ring */
+.ring-row { display: flex; align-items: center; gap: 12px; }
+.ring { position: relative; width: 38px; height: 38px; flex-shrink: 0; }
+.ring svg { transform: rotate(-90deg); }
+.ring-n {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 600;
+}
+
+
+
+/* stat row */
+.stat-row { display: flex; align-items: center; justify-content: space-between; }
+.stat-l { }
+.stat-name { font-size: 14px; color: var(--t2); }
+.stat-hint { font-size: 11px; color: var(--t3); margin-top: 1px; }
+.stat-val { font-size: 30px; font-weight: 700; letter-spacing: -1px; }
+.stat-val sub { font-size: 13px; font-weight: 400; color: var(--t2); letter-spacing: 0; vertical-align: baseline; }
+
+/* ── WEEK LIST ── */
+.wlist { display: flex; flex-direction: column; gap: 8px; }
+
+.wrow {
+  background: var(--s1);
+  border-radius: var(--r);
+  padding: 15px 18px;
+  display: flex; align-items: center; gap: 14px;
+  cursor: pointer; border: 1px solid var(--border);
+  transition: background .15s, transform .1s;
+}
+.wrow:hover { background: var(--s2); }
+.wrow:active { transform: scale(.99); }
+.wrow.cw { border-color: rgba(255,255,255,.22); }
+
+.wr-n { font-size: 17px; font-weight: 700; color: var(--t2); min-width: 26px; }
+.wr-info { flex: 1; }
+.wr-theme { font-size: 15px; font-weight: 600; }
+.wr-sub { font-size: 12px; color: var(--t2); margin-top: 1px; }
+.wr-arr { color: var(--t3); font-size: 14px; }
+
+/* ── WEEK DETAIL ── */
+.week-hero {
+  background: var(--s1);
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.wh-n { font-size: 52px; font-weight: 700; letter-spacing: -2px; line-height: 1; }
+.wh-theme { font-size: 13px; color: var(--t2); margin-top: 3px; }
+.wh-stems { font-size: 12px; color: var(--t3); margin-top: 1px; }
+.wh-r { text-align: right; }
+.wh-cnt { font-size: 32px; font-weight: 700; letter-spacing: -1px; }
+.wh-clabel { font-size: 11px; color: var(--t3); }
+
+.slist { display: flex; flex-direction: column; gap: 10px; }
+
+.srow {
+  background: var(--s1);
+  border-radius: var(--r);
+  padding: 18px;
+  cursor: pointer; border: 1px solid var(--border);
+  transition: background .15s, transform .1s;
+}
+.srow:hover { background: var(--s2); }
+.srow:active { transform: scale(.99); }
+
+.sr-lbl { font-size: 11px; color: var(--t3); text-transform: uppercase; letter-spacing: .1em; font-weight: 500; margin-bottom: 6px; }
+.sr-text { font-size: 16px; font-weight: 400; line-height: 1.5; }
+.sr-cnt { font-size: 12px; color: var(--t3); margin-top: 8px; }
+.sr-cnt.has { color: rgba(255,255,255,.45); }
+
+.wknd-box {
+  background: var(--s1);
+  border-radius: var(--r);
+  padding: 18px;
+  border: 1px dashed rgba(255,255,255,.13);
+  margin-top: 20px;
+}
+.wknd-lbl { font-size: 11px; color: var(--t3); text-transform: uppercase; letter-spacing: .1em; font-weight: 500; margin-bottom: 8px; }
+.wknd-text { font-size: 14px; color: var(--t2); line-height: 1.6; font-style: italic; }
+
+/* ── FOCUS MODE (same screen style) ── */
+#focus { overflow-y: auto; }
+#focus .page { padding-bottom: 60px; }
+
+.f-stem-card {
+  background: var(--s1);
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  padding: 20px;
+  margin-bottom: 12px;
+}
+
+.f-stem-lbl {
+  font-size: 11px; font-weight: 500;
+  color: var(--t2); letter-spacing: .08em;
+  text-transform: uppercase; margin-bottom: 10px;
+}
+
+.f-stem-text {
+  font-size: 18px; font-weight: 400;
+  line-height: 1.55; color: var(--t1);
+}
+
+.f-nav-tabs {
+  display: flex; gap: 6px; flex-wrap: wrap; margin-top: 14px;
+}
+
+.f-tab {
+  background: var(--s2); border: none; border-radius: 20px;
+  padding: 5px 13px;
+  font-family: var(--font); font-size: 12px; font-weight: 500;
+  color: var(--t2); cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.f-tab.on { background: var(--t1); color: #000; }
+.f-tab:hover:not(.on) { background: var(--s3); color: var(--t1); }
+
+/* entries card */
+.f-entries-card {
+  background: var(--s1);
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  padding: 18px;
+  margin-bottom: 12px;
+}
+
+.f-entries-header {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.f-entries-lbl {
+  font-size: 11px; font-weight: 500;
+  color: var(--t2); letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.f-counter {
+  font-size: 12px; color: var(--t3);
+  transition: color .3s;
+}
+.f-counter.ok { color: rgba(255,255,255,.5); }
+
+.fentry {
+  display: flex; align-items: baseline; gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  animation: eIn .2s ease;
+}
+@keyframes eIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }
+.fentry:last-child { border-bottom: none; }
+
+.fe-n { font-size: 12px; color: var(--t3); min-width: 18px; }
+.fe-t { font-size: 15px; font-weight: 300; color: var(--t1); flex: 1; line-height: 1.5; word-break: break-word; }
+.fe-del { background: none; border: none; color: var(--t3); font-size: 16px; cursor: pointer; opacity: 0; transition: opacity .15s; padding: 2px 4px; line-height: 1; }
+.fentry:hover .fe-del { opacity: 1; }
+
+/* input card */
+.f-input-card {
+  background: var(--s1);
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  padding: 16px 18px;
+  display: flex; align-items: center; gap: 12px;
+}
+
+.f-input {
+  flex: 1; background: none; border: none; outline: none;
+  font-family: var(--font); font-size: 16px; font-weight: 300;
+  color: var(--t1); caret-color: white;
+}
+.f-input::placeholder { color: var(--t3); }
+
+.f-add {
+  width: 32px; height: 32px;
+  background: var(--s2); border: none; border-radius: 50%;
+  cursor: pointer; color: var(--t1); font-size: 20px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: background .15s, transform .1s;
+}
+.f-add:hover { background: var(--s3); transform: scale(1.1); }
+
+::-webkit-scrollbar { width: 0; }
+</style>
+
+</head>
+<body>
+
+<!-- ═══ HOME ═══ -->
+
+<div id="home" class="screen active">
+<div class="page">
+  <div class="home-head">
+    <div>
+      <div class="app-title">Selbstwert</div>
+      <div class="app-sub">31-Wochen-Programm</div>
+    </div>
+    <button class="icon-btn" onclick="show('weeklist')">☰</button>
+  </div>
+
+  <div class="grid" style="margin-bottom:12px;">
+
+```
+<!-- current week -->
+<div class="card" onclick="goCurrentWeek()">
+  <div class="c-label">Aktuelle Woche</div>
+  <div class="ring-row">
+    <div class="ring">
+      <svg width="38" height="38" viewBox="0 0 38 38">
+        <circle cx="19" cy="19" r="14" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="2.5"/>
+        <circle id="ringArc" cx="19" cy="19" r="14" fill="none" stroke="white" stroke-width="2.5"
+          stroke-dasharray="88" stroke-dashoffset="85" stroke-linecap="round"/>
+      </svg>
+      <div class="ring-n" id="rn">1</div>
+    </div>
+    <div>
+      <div style="font-size:13px;font-weight:600;" id="hTheme">–</div>
+    </div>
+  </div>
+  <div style="margin-top:14px;">
+    <div class="c-big" style="font-size:28px;letter-spacing:-1px;" id="hWeek">Woche 1</div>
+    <div class="c-sub">von 31 Wochen</div>
+  </div>
+  <div class="c-arr">↗</div>
+</div>
+
+<!-- entries -->
+<div class="card" onclick="goCurrentWeek()">
+  <div class="c-label">Einträge</div>
+  <div class="c-big" id="hTotal">0</div>
+  <div style="margin-top:14px;">
+    <div class="c-sub" id="hStemsDone">0 Sätze bearbeitet</div>
+  </div>
+  <div class="c-arr">✦</div>
+</div>
+
+<!-- next stem -->
+<div class="card card-full" onclick="goCurrentWeek()" style="cursor:pointer;">
+  <div class="c-label">Nächster Satz</div>
+  <div class="ring-row">
+    <div class="ring">
+      <svg width="38" height="38" viewBox="0 0 38 38">
+        <circle cx="19" cy="19" r="14" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="2.5"/>
+        <circle id="ringArc2" cx="19" cy="19" r="14" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="2.5"
+          stroke-dasharray="88" stroke-dashoffset="66" stroke-linecap="round" style="transform:rotate(-90deg);transform-origin:19px 19px;"/>
+      </svg>
+      <div class="ring-n" id="rn2" style="font-size:12px;">1</div>
+    </div>
+    <div style="flex:1;">
+      <div style="font-size:15px;font-weight:600;" id="hNextStem">Satz 1 beginnen</div>
+      <div style="font-size:12px;color:var(--t2);" id="hNextHint">Woche 1</div>
+    </div>
+    <div style="color:var(--t3);font-size:14px;">↗</div>
+  </div>
+</div>
+
+<!-- total -->
+<div class="card card-full">
+  <div class="stat-row">
+    <div class="stat-l">
+      <div class="stat-name">Gesamte Einträge</div>
+      <div class="stat-hint">Alle 31 Wochen</div>
+    </div>
+    <div class="stat-val" id="hGrand">0 <sub>Sätze</sub></div>
+  </div>
+</div>
+```
+
+  </div>
+</div>
+</div>
+
+<!-- ═══ WEEK LIST ═══ -->
+
+<div id="weeklist" class="screen">
+<div class="page">
+  <div class="nav-bar">
+    <button class="back-btn" onclick="show('home')">←</button>
+    <div class="page-title">Alle Wochen</div>
+  </div>
+  <div class="wlist" id="wlistEl"></div>
+</div>
+</div>
+
+<!-- ═══ WEEK DETAIL ═══ -->
+
+<div id="weekdetail" class="screen">
+<div class="page">
+  <div class="nav-bar">
+    <button class="back-btn" onclick="show('weeklist')">←</button>
+    <div class="page-title" id="dtitle">Woche 1</div>
+  </div>
+
+  <div class="week-hero">
+    <div>
+      <div class="wh-n" id="dBig">1</div>
+      <div class="wh-theme" id="dTheme">–</div>
+      <div class="wh-stems" id="dStems">4 Satzstämme</div>
+    </div>
+    <div class="wh-r">
+      <div class="wh-cnt" id="dCnt">0</div>
+      <div class="wh-clabel">Einträge</div>
+    </div>
+  </div>
+
+  <div class="slist" id="slistEl"></div>
+
+  <div class="wknd-box">
+    <div class="wknd-lbl">Wochenend-Reflexion</div>
+    <div class="wknd-text">„Wenn irgendetwas von dem, was ich diese Woche geschrieben habe, wahr ist, wäre es hilfreich, wenn ich …"</div>
+  </div>
+</div>
+</div>
+
+<!-- ═══ FOCUS ═══ -->
+
+<div id="focus" class="screen">
+<div class="page">
+  <div class="nav-bar">
+    <button class="back-btn" onclick="closeFocus()">←</button>
+    <div class="page-title" id="fTitle">Woche 1 · Satz 1</div>
+  </div>
+
+  <!-- stem card with tab switcher -->
+
+  <div class="f-stem-card">
+    <div class="f-stem-lbl">Satzstamm</div>
+    <div class="f-stem-text" id="fStem"></div>
+    <div class="f-nav-tabs" id="fNav"></div>
+  </div>
+
+  <!-- entries card -->
+
+  <div class="f-entries-card" id="fEntriesCard">
+    <div class="f-entries-header">
+      <div class="f-entries-lbl">Deine Antworten</div>
+      <div class="f-counter" id="fCtr">0 / 6</div>
+    </div>
+    <div id="fEntries"></div>
+  </div>
+
+  <!-- input card -->
+
+  <div class="f-input-card">
+    <input class="f-input" id="fInput" placeholder="… schreib einfach weiter"
+      onkeydown="fKey(event)" autocomplete="off"/>
+    <button class="f-add" onclick="fAdd()">+</button>
+  </div>
+</div>
+</div>
+
+<script>
+const W=[
+  {t:"Grundlagen",s:["Wenn ich heute mehr Bewusstsein in mein Leben bringe …","Wenn ich heute mehr Verantwortung für meine Entscheidungen übernehme …","Wenn ich heute mehr darauf achte, wie ich mit Menschen umgehe …","Wenn ich mein Energielevel heute um 5% steigere …"]},
+  {t:"Bewusstsein vertiefen",s:["Wenn ich 5% mehr Bewusstsein in meine wichtigen Beziehungen bringe …","Wenn ich 5% mehr Bewusstsein für meine Unsicherheiten bringe …","Wenn ich 5% mehr Bewusstsein für meine tiefsten Bedürfnisse bringe …","Wenn ich 5% mehr Bewusstsein für meine Emotionen bringe …"]},
+  {t:"Zuhören & Menschen",s:["Wenn ich Zuhören als kreativen Akt behandle …","Wenn ich bemerke, wie Menschen von meiner Aufmerksamkeit berührt werden …","Wenn ich mehr Bewusstsein in meinen Umgang mit Menschen bringe …","Wenn ich mich verpflichte, fair und wohlwollend mit Menschen umzugehen …"]},
+  {t:"Selbstwertgefühl aktivieren",s:["Wenn ich heute ein höheres Selbstwertgefühl in meine Aktivitäten bringe …","Wenn ich heute ein höheres Selbstwertgefühl in meinen Umgang mit Menschen bringe …","Wenn ich heute 5% selbstakzeptierender bin …","Wenn ich mich selbst akzeptiere, auch wenn ich Fehler mache …","Wenn ich mich selbst akzeptiere, auch wenn ich verwirrt und überfordert bin …"]},
+  {t:"Körper & Konflikte",s:["Wenn ich meinen Körper mehr akzeptiere …","Wenn ich meinen Körper verleugne und ablehne …","Wenn ich meine inneren Konflikte verleugne …","Wenn ich alle Teile von mir mehr akzeptiere …"]},
+  {t:"Gefühle & Gedanken",s:["Wenn ich heute mein Selbstwertgefühl steigern wollte, könnte ich …","Wenn ich meine Gefühle mehr akzeptiere …","Wenn ich meine Gefühle verleugne und ablehne …","Wenn ich meine Gedanken mehr akzeptiere …","Wenn ich meine Gedanken verleugne und ablehne …"]},
+  {t:"Angst & Schmerz",s:["Wenn ich meine Ängste mehr akzeptiere …","Wenn ich meine Ängste verleugne und ablehne …","Wenn ich meinen Schmerz mehr akzeptiere …","Wenn ich meinen Schmerz verleugne und ablehne …"]},
+  {t:"Wut & Sexualität",s:["Wenn ich meine Wut mehr akzeptiere …","Wenn ich meine Wut verleugne und ablehne …","Wenn ich meine Sexualität mehr akzeptiere …","Wenn ich meine Sexualität verleugne und ablehne …"]},
+  {t:"Aufregung & Intelligenz",s:["Wenn ich meine Aufregung mehr akzeptiere …","Wenn ich meine Aufregung verleugne und ablehne …","Wenn ich meine Intelligenz mehr akzeptiere …","Wenn ich meine Intelligenz verleugne und ablehne …"]},
+  {t:"Freude & Integration",s:["Wenn ich meine Freude mehr akzeptiere …","Wenn ich meine Freude verleugne und ablehne …","Wenn ich mehr Bewusstsein für alle Teile von mir bringe …","Während ich lerne, mich so zu akzeptieren, wie ich bin …"]},
+  {t:"Selbstverantwortung",s:["Selbstverantwortung bedeutet für mich …","Wenn ich 5% mehr Verantwortung für mein Leben übernehme …","Wenn ich Verantwortung für mein Leben vermeide …","Wenn ich 5% mehr Verantwortung für meine Ziele übernehme …","Wenn ich Verantwortung für meine Ziele vermeide …"]},
+  {t:"Verantwortung in Beziehungen",s:["Wenn ich 5% mehr Verantwortung für den Erfolg meiner Beziehungen übernehme …","Manchmal mache ich mich passiv, wenn ich …","Manchmal mache ich mich hilflos, wenn ich …","Ich werde mir bewusst …"]},
+  {t:"Verantwortung fürs Leben",s:["Wenn ich 5% mehr Verantwortung für meinen Lebensstandard übernehme …","Wenn ich 5% mehr Verantwortung für meine Wahl der Begleiter übernehme …","Wenn ich 5% mehr Verantwortung für mein persönliches Glück übernehme …","Wenn ich 5% mehr Verantwortung für mein Selbstwertgefühl übernehme …"]},
+  {t:"Selbstbehauptung",s:["Selbstbehauptung bedeutet für mich …","Wenn ich heute 5% selbstbehauptender leben würde …","Wenn ich meine Gedanken und Gefühle heute mit Respekt behandle …","Wenn ich meine Wünsche heute mit Respekt behandle …"]},
+  {t:"Eigene Bedürfnisse",s:["Wenn mir (als Kind) jemand gesagt hätte, dass meine Wünsche wirklich wichtig sind …","Wenn ich (als Kind) gelernt hätte, mein Leben zu ehren …","Wenn ich mein Leben als unwichtig behandle …","Wenn ich bereit wäre, Ja zu sagen, wenn ich Ja will, und Nein, wenn ich Nein will …","Wenn ich bereit wäre, die Musik in mir zu zeigen …","Wenn ich 5% mehr von dem ausdrücken würde, wer ich bin …"]},
+  {t:"Zielgerichtet leben",s:["Zielgerichtet leben bedeutet für mich …","Wenn ich 5% mehr Zielgerichtetheit in mein Leben bringe …","Wenn ich bei der Arbeit 5% zielgerichteter handle …","Wenn ich in meinen Beziehungen 5% zielgerichteter handle …"]},
+  {t:"Ziele & Glück",s:["Wenn ich 5% mehr Zielgerichtetheit für meine tiefsten Sehnsüchte aufbringe …","Wenn ich mehr Verantwortung für die Erfüllung meiner Wünsche übernehme …","Wenn ich mein Glück zu einem bewussten Ziel mache …"]},
+  {t:"Integrität",s:["Integrität bedeutet für mich …","Wenn ich mir Momente anschaue, wo vollständige Integrität schwer fällt …","Wenn ich 5% mehr Integrität in mein Leben bringe …","Wenn ich 5% mehr Integrität in meine Arbeit bringe …"]},
+  {t:"Integrität in Beziehungen",s:["Wenn ich 5% mehr Integrität in meine Beziehungen bringe …","Wenn ich den Werten treu bleibe, die ich für richtig halte …","Wenn ich mich weigere, nach Werten zu leben, die ich nicht respektiere …","Wenn ich meinen Selbstrespekt als hohe Priorität behandle …"]},
+  {t:"Das innere Kind",s:["Wenn das Kind in mir sprechen könnte, würde es sagen …","Wenn der Teenager, der ich einmal war, noch in mir existiert …","Wenn mein innerer Teenager sprechen könnte, würde er/sie sagen …","Bei dem Gedanken, meinem inneren Kind zu helfen …","Bei dem Gedanken, meinem inneren Teenager zu helfen …","Wenn ich mich mit meinen jüngeren Anteilen anfreunden könnte …"]},
+  {t:"Jüngere Anteile akzeptieren",s:["Wenn sich mein inneres Kind von mir akzeptiert fühlen würde …","Wenn mein innerer Teenager das Gefühl hätte, dass ich auf seiner/ihrer Seite bin …","Wenn meine jüngeren Anteile spüren würden, dass ich Mitgefühl für ihre Kämpfe habe …","Wenn ich mein inneres Kind in meine Arme nehmen könnte …","Wenn ich meinen inneren Teenager in meine Arme nehmen könnte …"]},
+  {t:"Ablehnung erkennen",s:["Manchmal fühlt sich mein inneres Kind von mir abgelehnt, wenn ich …","Manchmal fühlt sich mein innerer Teenager von mir abgelehnt, wenn ich …","Etwas, das mein inneres Kind von mir braucht und selten bekommt, ist …","Etwas, das mein innerer Teenager von mir braucht und nicht bekommen hat, ist …","Eine Art, wie mein inneres Kind sich für Ablehnung rächt, ist …"]},
+  {t:"Verbindung herstellen",s:["Bei dem Gedanken, meinem inneren Kind zu geben, was es von mir braucht …","Bei dem Gedanken, meinem inneren Teenager zu geben, was er/sie von mir braucht …","Wenn sich mein inneres Kind und ich ineinander verlieben würden …","Wenn sich mein innerer Teenager und ich ineinander verlieben würden …"]},
+  {t:"Vertrauen aufbauen",s:["Wenn ich akzeptiere, dass mein inneres Kind Zeit braucht, um mir zu vertrauen …","Wenn ich akzeptiere, dass mein innerer Teenager Zeit braucht, um mir zu vertrauen …","Während ich verstehe, dass mein inneres Kind und mein Teenager beide Teil von mir sind …","Ich werde mir bewusst …"]},
+  {t:"Schwierige Gefühle",s:["Manchmal, wenn ich Angst habe …","Manchmal, wenn ich verletzt bin …","Manchmal, wenn ich wütend bin …","Ein effektiver Weg, mit Angst umzugehen, könnte sein …","Ein effektiver Weg, mit Verletzung umzugehen, könnte sein …","Ein effektiver Weg, mit Wut umzugehen, könnte sein …"]},
+  {t:"Positive Gefühle",s:["Manchmal, wenn ich aufgeregt bin …","Manchmal, wenn ich mich sexuell angezogen fühle …","Wenn ich mich mit meiner Aufregung anfreunde …","Wenn ich mich mit meiner Sexualität anfreunde …","Während ich mich mit der vollen Bandbreite meiner Emotionen wohler fühle …"]},
+  {t:"Sicherer Raum",s:["Wenn ich daran denke, eine bessere Freundschaft mit meinem inneren Kind aufzubauen …","Wenn ich daran denke, eine bessere Freundschaft mit meinem inneren Teenager aufzubauen …","Während ich einen sicheren Raum für mein inneres Kind schaffe …","Während ich einen sicheren Raum für meinen inneren Teenager schaffe …"]},
+  {t:"Elternstimmen",s:["Meine Mutter gab mir ein Bild von mir als …","Mein Vater gab mir ein Bild von mir als …","Meine Mutter spricht durch meine Stimme, wenn ich mir sage …","Mein Vater spricht durch meine Stimme, wenn ich mir sage …"]},
+  {t:"Elternbeziehungen",s:["Wenn ich 5% mehr Bewusstsein in meine Beziehung zu meiner Mutter bringe …","Wenn ich 5% mehr Bewusstsein in meine Beziehung zu meinem Vater bringe …","Wenn ich meine Mutter und meinen Vater realistisch betrachte …","Wenn ich über das Bewusstsein nachdenke, das ich in meine Beziehung zu meiner Mutter bringe …"]},
+  {t:"Psychologische Freiheit",s:["Bei dem Gedanken, psychologisch frei von meiner Mutter zu sein …","Bei dem Gedanken, psychologisch frei von meinem Vater zu sein …","Bei dem Gedanken, vollständig mir selbst zu gehören …","Wenn mein Leben wirklich mir gehört …","Wenn ich wirklich in der Lage bin, unabhängig zu überleben …"]},
+  {t:"Alle sechs Säulen",s:["Wenn ich 5% mehr Bewusstsein in mein Leben bringe …","Wenn ich 5% selbstakzeptierender bin …","Wenn ich 5% mehr Selbstverantwortung in mein Leben bringe …","Wenn ich 5% selbstbehauptender handle …","Wenn ich mein Leben 5% zielgerichteter lebe …","Wenn ich 5% mehr Integrität in mein Leben bringe …","Wenn ich tief einatme und zulasse, zu spüren, wie sich Selbstwertgefühl anfühlt …"]}
+];
+
+let data={}, vw=0, fw=0, fs=0;
+
+const gk=(w,s)=>`w${w}_s${s}`;
+const ge=(w,s)=>data[gk(w,s)]||[];
+const se=(w,s,l)=>{ data[gk(w,s)]=l; try{localStorage.setItem('sw',JSON.stringify(data));}catch(e){} };
+const load=()=>{ try{const d=localStorage.getItem('sw');if(d)data=JSON.parse(d);}catch(e){} };
+const total=()=>Object.values(data).reduce((a,b)=>a+(b||[]).length,0);
+const wCnt=(w)=>W[w].s.reduce((a,_,s)=>a+ge(w,s).length,0);
+const wStemsDone=(w)=>W[w].s.filter((_,s)=>ge(w,s).length>0).length;
+const curWeek=()=>{ for(let w=W.length-1;w>=0;w--){ if(wCnt(w)>0)return w; } return 0; };
+const esc=(t)=>t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+/* screens */
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==='home') renderHome();
+  if(id==='weeklist') renderWList();
+}
+
+function goCurrentWeek(){
+  vw=curWeek();
+  renderDetail(vw);
+  show('weekdetail');
+}
+
+/* home */
+function renderHome(){
+  const cw=curWeek(), wk=W[cw];
+  document.getElementById('hWeek').textContent=`Woche ${cw+1}`;
+  document.getElementById('hTheme').textContent=wk.t;
+  document.getElementById('rn').textContent=cw+1;
+  document.getElementById('rn2').textContent=cw+1;
+  document.getElementById('hTotal').textContent=total();
+  document.getElementById('hStemsDone').textContent=`${wStemsDone(cw)} Sätze bearbeitet`;
+  document.getElementById('hGrand').innerHTML=`${total()} <sub>Sätze</sub>`;
+
+  // ring
+  const pct=(cw+1)/31;
+  const circ=2*Math.PI*14;
+  const arc=document.getElementById('ringArc');
+  arc.setAttribute('stroke-dashoffset', circ*(1-pct));
+  arc.style.transform='rotate(-90deg)';
+  arc.style.transformOrigin='19px 19px';
+
+  // next stem
+  let ns=0;
+  for(let s=0;s<wk.s.length;s++){ if(ge(cw,s).length===0){ns=s;break;} }
+  document.getElementById('hNextStem').textContent=`Satz ${ns+1} beginnen`;
+  document.getElementById('hNextHint').textContent=`Woche ${cw+1} · ${wk.t}`;
+}
+
+/* week list */
+function renderWList(){
+  const el=document.getElementById('wlistEl');
+  el.innerHTML='';
+  const cw=curWeek();
+  W.forEach((w,i)=>{
+    const cnt=wCnt(i);
+    const r=document.createElement('div');
+    r.className='wrow'+(i===cw?' cw':'');
+    r.innerHTML=`<div class="wr-n">${i+1}</div><div class="wr-info"><div class="wr-theme">${w.t}</div><div class="wr-sub">${w.s.length} Sätze${cnt>0?' · '+cnt+' Einträge':''}</div></div><div class="wr-arr">↗</div>`;
+    r.onclick=()=>{ vw=i; renderDetail(i); show('weekdetail'); };
+    el.appendChild(r);
+  });
+}
+
+/* week detail */
+function renderDetail(wi){
+  const wk=W[wi];
+  document.getElementById('dtitle').textContent=`Woche ${wi+1}`;
+  document.getElementById('dBig').textContent=wi+1;
+  document.getElementById('dTheme').textContent=wk.t;
+  document.getElementById('dStems').textContent=`${wk.s.length} Satzstämme`;
+  document.getElementById('dCnt').textContent=wCnt(wi);
+  const list=document.getElementById('slistEl');
+  list.innerHTML='';
+  wk.s.forEach((stem,si)=>{
+    const cnt=ge(wi,si).length;
+    const r=document.createElement('div');
+    r.className='srow';
+    r.innerHTML=`<div class="sr-lbl">Satz ${si+1}</div><div class="sr-text">${stem}</div><div class="sr-cnt ${cnt>0?'has':''}">${cnt>0?cnt+' Einträge · ':''}Tippen zum Starten</div>`;
+    r.onclick=()=>openFocus(wi,si);
+    list.appendChild(r);
+  });
+}
+
+/* focus */
+function openFocus(wi,si){
+  fw=wi; fs=si;
+  renderFocus();
+  show('focus');
+  setTimeout(()=>document.getElementById('fInput').focus(),200);
+}
+
+function closeFocus(){
+  renderDetail(vw);
+  renderHome();
+  show('weekdetail');
+}
+
+function renderFocus(){
+  document.getElementById('fTitle').textContent=`Woche ${fw+1} · Satz ${fs+1}`;
+  document.getElementById('fStem').textContent=W[fw].s[fs];
+  document.getElementById('fInput').value='';
+  renderFEntries();
+  renderFNav();
+}
+
+function renderFEntries(){
+  const list=ge(fw,fs);
+  const el=document.getElementById('fEntries');
+  el.innerHTML='';
+  if(list.length===0){
+    el.innerHTML='<div style="font-size:14px;color:var(--t3);padding:4px 0;">Noch keine Antworten – fang einfach an.</div>';
+  } else {
+    list.forEach((txt,i)=>{
+      const d=document.createElement('div');
+      d.className='fentry';
+      d.innerHTML=`<span class="fe-n">${i+1}</span><span class="fe-t">${esc(txt)}</span><button class="fe-del" onclick="fDel(${i})">×</button>`;
+      el.appendChild(d);
+    });
+  }
+  const ctr=document.getElementById('fCtr');
+  ctr.textContent=`${list.length} / 6`;
+  ctr.className='f-counter'+(list.length>=6?' ok':'');
+}
+
+function renderFNav(){
+  const nav=document.getElementById('fNav');
+  nav.innerHTML='';
+  W[fw].s.forEach((_,i)=>{
+    const btn=document.createElement('button');
+    btn.className='f-tab'+(i===fs?' on':'');
+    btn.textContent=`${i+1}`;
+    btn.onclick=()=>{ fs=i; renderFocus(); setTimeout(()=>document.getElementById('fInput').focus(),50); };
+    nav.appendChild(btn);
+  });
+}
+
+function fAdd(){
+  const inp=document.getElementById('fInput');
+  const txt=inp.value.trim();
+  if(!txt)return;
+  const l=ge(fw,fs);
+  l.push(txt);
+  se(fw,fs,l);
+  inp.value='';
+  renderFEntries();
+  inp.focus();
+}
+
+function fDel(i){
+  const l=ge(fw,fs);
+  l.splice(i,1);
+  se(fw,fs,l);
+  renderFEntries();
+}
+
+function fKey(e){ if(e.key==='Enter'){e.preventDefault();fAdd();} }
+
+load();
+renderHome();
+
+// ── SERVICE WORKER (offline) ──
+if('serviceWorker' in navigator){
+  const swCode = `
+const CACHE = 'selbstwert-v1';
+self.addEventListener('install', e => {
+  e.waitUntil(
+    caches.open(CACHE).then(c => c.addAll([location.href || '/']))
+  );
+  self.skipWaiting();
+});
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(keys =>
+    Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))
+  ));
+  self.clients.claim();
+});
+self.addEventListener('fetch', e => {
+  e.respondWith(
+    caches.match(e.request).then(cached => cached || fetch(e.request).then(res => {
+      const clone = res.clone();
+      caches.open(CACHE).then(c => c.put(e.request, clone));
+      return res;
+    }).catch(() => cached))
+  );
+});
+  `;
+  const blob = new Blob([swCode], {type:'application/javascript'});
+  const swUrl = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swUrl).catch(()=>{});
+}
+</script>
+
+</body>
+</html>
