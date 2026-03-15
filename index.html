@@ -260,28 +260,16 @@ justify-content:center;flex-shrink:0;transition:background .15s,transform .1s;
 </div>
 
 <!-- stat cards -->
-<div class="stat-row-cards">
-  <div class="stat-card">
+<div style="display:flex;gap:12px;">
+  <div class="card" style="flex:1;cursor:pointer;" onclick="show('weeklist')">
     <div class="c-label">Aktuelle Woche</div>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;">
-      <div>
-        <div style="font-size:26px;font-weight:700;letter-spacing:-1px;" id="hWeek">Woche 1</div>
-        <div class="c-sub" id="hTheme">–</div>
-      </div>
-      <div class="ring" style="width:40px;height:40px;">
-        <svg width="40" height="40" viewBox="0 0 40 40">
-          <circle cx="20" cy="20" r="15" fill="none" stroke="rgba(128,128,128,.2)" stroke-width="2.5"/>
-          <circle id="ringArc" cx="20" cy="20" r="15" fill="none" stroke="var(--t1)" stroke-width="2.5"
-            stroke-dasharray="94" stroke-dashoffset="91" stroke-linecap="round" style="transform:rotate(-90deg);transform-origin:20px 20px;"/>
-        </svg>
-        <div class="ring-n" id="rn" style="font-size:12px;">1</div>
-      </div>
-    </div>
+    <div style="font-size:28px;font-weight:700;letter-spacing:-1px;margin-top:4px;" id="hWeek">Woche 1</div>
+    <div class="c-sub" style="margin-top:2px;" id="hTheme">–</div>
   </div>
-  <div class="stat-card tap" onclick="show('weeklist')" style="cursor:pointer;">
+  <div class="card" style="flex:1;cursor:pointer;" onclick="show('weeklist')">
     <div class="c-label">Fortschritt</div>
-    <div class="stat-num" id="hWeeksDone">0</div>
-    <div class="c-sub" style="margin-top:4px;">Wochen abgeschl.</div>
+    <div style="font-size:36px;font-weight:700;letter-spacing:-1px;margin-top:4px;" id="hWeeksDone">0</div>
+    <div class="c-sub" style="margin-top:2px;">/ 31 Wochen</div>
   </div>
 </div>
 
@@ -567,17 +555,9 @@ function renderHome(){
 
   document.getElementById('hWeek').textContent=`Woche ${cw+1}`;
   document.getElementById('hTheme').textContent=wk.t;
-  document.getElementById('rn').textContent=cw+1;
   document.getElementById('hWeeksDone').textContent=weeksDone();
   document.getElementById('hTotalEntries').textContent=`${totalEntries()} Einträge gesamt`;
   document.getElementById('hDayLabel').textContent=`Tag ${cd} von ${DAYS_PER_WEEK}`;
-
-  // ring
-  const pct=(cw+1)/31;
-  const circ=2*Math.PI*15;
-  const arc=document.getElementById('ringArc');
-  arc.setAttribute('stroke-dasharray',circ);
-  arc.setAttribute('stroke-dashoffset',circ*(1-pct));
 
   // day dots
   const dots=document.getElementById('dayDots');
